@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python test_imports.py)",
+      "Bash(python -c \"from src.engine.signal_fusion import SignalFusionEngine\")",
+      "Bash(pip install:*)",
+      "Bash(python main.py --once)",
+      "Bash(curl:*)",
+      "Bash(python -c \":*)",
+      "Bash(python main.py)",
+      "Bash(streamlit run:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

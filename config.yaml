@@ -1,0 +1,71 @@
+backtest:
+  enabled: false
+  end_date: '2023-12-31'
+  initial_balance: 1000000
+  start_date: '2023-01-01'
+data_sources:
+  akshare:
+    enabled: true
+  baostock:
+    enabled: false
+  tushare:
+    enabled: false
+    token: ''
+fund_flow:
+  main_force_threshold: 5000000
+  northbound_threshold: 10000000
+  weight: 0.25
+market_sentiment:
+  fear_greed_threshold: 30
+  weight: 0.1
+monitor:
+  after_market: false
+  interval: 300
+  market_hours: false
+  pre_market: false
+notification:
+  console: true
+  dingtalk_webhook: ''
+  enabled: true
+  signal_threshold: 0.5
+  wechat_webhook: ''
+risk:
+  blacklist: []
+  excluded_kcb: false
+  excluded_st: true
+  max_drawdown: 0.15
+sentiment:
+  keyword_threshold: 0.6
+  model: snownlp
+  news_weight: 0.35
+stock_pool:
+  custom_codes:
+  - '000001'
+  - '600000'
+  - '000002'
+  max_stocks: 10
+  type: custom
+system:
+  data_dir: data
+  db_path: data/trading.db
+  log_dir: logs
+  log_level: INFO
+technical:
+  ma_periods:
+  - 5
+  - 10
+  - 20
+  - 60
+  macd_fast: 12
+  macd_signal: 9
+  macd_slow: 26
+  rsi_period: 14
+  weight: 0.3
+trading:
+  initial_capital: 20000
+  max_position_per_stock: 0.2
+  max_sell_score: -0.6
+  max_total_position: 0.95
+  min_buy_score: 0.5
+  stop_loss: 0.08
+  take_profit: 0.2
