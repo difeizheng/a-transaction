@@ -27,9 +27,10 @@ class Settings:
     market_hours_only: bool = True
 
     # 权重配置
-    news_weight: float = 0.35
-    technical_weight: float = 0.30
-    fund_weight: float = 0.25
+    news_weight: float = 0.30
+    technical_weight: float = 0.25
+    fund_weight: float = 0.20
+    volatility_weight: float = 0.15
     sentiment_weight: float = 0.10
 
     # 交易配置
@@ -51,8 +52,11 @@ class Settings:
     notification_enabled: bool = True
     wechat_webhook: str = ""
     dingtalk_webhook: str = ""
+    dingtalk_secret: str = ""  # 钉钉机器人签名 secret
+    hook_url: str = ""  # 通用 webhook URL
     console_output: bool = True
     signal_threshold: float = 0.5
+    send_summary: bool = True  # 是否每次监控发送汇总
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Settings":
@@ -78,9 +82,10 @@ class Settings:
             max_stocks=stock_pool.get("max_stocks", 50),
             monitor_interval=monitor.get("interval", 300),
             market_hours_only=monitor.get("market_hours", True),
-            news_weight=sentiment.get("news_weight", 0.35),
-            technical_weight=technical.get("weight", 0.30),
-            fund_weight=fund_flow.get("weight", 0.25),
+            news_weight=sentiment.get("news_weight", 0.30),
+            technical_weight=technical.get("weight", 0.25),
+            fund_weight=fund_flow.get("weight", 0.20),
+            volatility_weight=technical.get("volatility_weight", 0.15),
             sentiment_weight=market_sentiment.get("weight", 0.10),
             initial_capital=trading.get("initial_capital", 1000000),
             max_position_per_stock=trading.get("max_position_per_stock", 0.2),
@@ -96,8 +101,11 @@ class Settings:
             notification_enabled=notification.get("enabled", True),
             wechat_webhook=notification.get("wechat_webhook", ""),
             dingtalk_webhook=notification.get("dingtalk_webhook", ""),
+            dingtalk_secret=notification.get("dingtalk_secret", ""),
+            hook_url=notification.get("hook_url", ""),
             console_output=notification.get("console", True),
             signal_threshold=notification.get("signal_threshold", 0.5),
+            send_summary=notification.get("send_summary", True),
         )
 
 

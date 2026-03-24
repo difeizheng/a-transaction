@@ -136,18 +136,19 @@ class AStockMonitor:
         self.volatility_analyzer = VolatilityAnalyzer()
         logger.info("分析器初始化成功")
 
-        # 7. 初始化改进策略
+        # 7. 初始化 V2 改进策略（实盘优化参数）
+        # 提高买入阈值，减少交易频率
         self.improved_strategy = ImprovedStrategy(
-            buy_threshold=0.6,
+            buy_threshold=0.7,           # 从 0.6 提高到 0.7
             sell_threshold=0.5,
-            min_buy_conditions=4,
+            min_buy_conditions=5,        # 从 4 个提高到 5 个
             min_sell_conditions=3,
-            atr_multiplier=2.5,
-            min_stop_distance=0.05,
-            max_stop_distance=0.15,
-            profit_ratio=3.0,
+            atr_multiplier=3.0,          # 从 2.5 提高到 3.0，放宽止损
+            min_stop_distance=0.08,      # 从 5% 提高到 8%
+            max_stop_distance=0.20,      # 从 15% 提高到 20%
+            profit_ratio=2.5,            # 从 3.0 降低到 2.5，更容易止盈
         )
-        logger.info("改进策略初始化成功")
+        logger.info("V2 改进策略初始化成功 - 实盘优化参数：买入阈值 0.7, 最少 5 条件，止损 8%-20%")
 
         # 7. 初始化引擎
         self.signal_fusion = SignalFusionEngine(
@@ -271,20 +272,20 @@ class AStockMonitor:
             process_count = min(len(self.stock_pool), 20)  # 每次最多处理 20 只
             sample_stocks = self.stock_pool[:process_count]
 
-            # 2. 生成信号（使用改进策略）
+            # 2. 生成信号（使用 V2 改进策略）
             results = []
             for stock in sample_stocks:
                 try:
-                    # 使用改进策略生成信号
+                    code = stock.get("code", "")
                     kline_data = self.price_collector.get_kline(
-                        stock.get("code", ""), period="daily", limit=120
+                        code, period="daily", limit=120
                     )
                     if kline_data.empty:
                         continue
 
                     signal = self.improved_strategy.generate_signal(
                         df=kline_data,
-                        stock_code=stock.get("code", ""),
+                        stock_code=code,
                         stock_name=stock.get("name", ""),
                     )
 
@@ -303,10 +304,10 @@ class AStockMonitor:
                             "take_profit_distance": signal.take_profit_distance,
                         })
 
-                        # 执行买入
+                        # 执行买入（V2 策略固定仓位）
                         if signal.signal in ["buy", "strong_buy"]:
-                            # 计算仓位
-                            position_ratio = 0.25 if signal.signal == "strong_buy" else 0.15
+                            # 固定仓位：strong_buy 25%, buy 20%
+                            position_ratio = 0.25 if signal.signal == "strong_buy" else 0.20
                             quantity = int(self.settings.initial_capital * position_ratio / signal.price / 100) * 100
                             if quantity > 0:
                                 self.improved_strategy.update_position(signal, quantity)
@@ -315,7 +316,7 @@ class AStockMonitor:
                     logger.error(f"分析股票 {stock.get('code')} 失败：{e}")
                     continue
 
-            # 3. 检查持仓退出条件
+            # 3. 检查持仓退出条件（V2 策略）
             for stock in sample_stocks:
                 try:
                     code = stock.get("code", "")
@@ -330,11 +331,8 @@ class AStockMonitor:
                     pos_info = self.improved_strategy.get_position_info(code)
                     if pos_info:
                         # 更新跟踪止损
-                        signal = self.improved_strategy.generate_signal(
-                            df=kline_data, stock_code=code, timestamp=timestamp
-                        )
                         self.improved_strategy.update_trailing_stop(
-                            code, current_price, signal.stop_distance
+                            code, current_price
                         )
 
                         # 检查退出条件

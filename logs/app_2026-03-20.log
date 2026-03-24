@@ -1,0 +1,509 @@
+2026-03-20 09:50:47.082 | INFO     | src.utils.db:init_tables:252 | 数据库表初始化完成
+2026-03-20 09:50:47.083 | INFO     | __main__:initialize:116 | 数据库初始化成功
+2026-03-20 09:50:47.728 | INFO     | src.collectors.price_collector:_init_baostock:41 | Baostock 初始化成功
+2026-03-20 09:50:47.992 | INFO     | src.collectors.price_collector:_init_akshare:52 | AkShare 初始化成功
+2026-03-20 09:50:47.992 | INFO     | src.collectors.fund_collector:_init_akshare:33 | AkShare 初始化成功
+2026-03-20 09:50:47.992 | INFO     | __main__:initialize:122 | 数据采集器初始化成功
+2026-03-20 09:50:47.993 | INFO     | __main__:initialize:128 | 分析器初始化成功
+2026-03-20 09:50:47.993 | INFO     | __main__:initialize:158 | 决策引擎初始化成功
+2026-03-20 09:50:47.993 | INFO     | __main__:initialize:166 | 通知管理器初始化成功
+2026-03-20 09:50:47.996 | INFO     | __main__:initialize:170 | 调度器初始化成功
+2026-03-20 09:50:47.996 | INFO     | __main__:_load_stock_pool:182 | 正在加载股票池...
+2026-03-20 09:50:47.996 | INFO     | __main__:_load_stock_pool:214 | 股票池加载完成，共 3 只股票
+2026-03-20 09:50:47.996 | INFO     | __main__:initialize:176 | ==================================================
+2026-03-20 09:50:47.996 | INFO     | __main__:initialize:177 | A 股监控系统初始化完成
+2026-03-20 09:50:47.996 | INFO     | __main__:initialize:178 | ==================================================
+2026-03-20 09:50:47.996 | INFO     | __main__:start:418 | 启动监控系统...
+2026-03-20 09:50:48.000 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 09:50:48
+2026-03-20 09:50:50.133 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 09:50:50.133 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 09:50:50.762 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 09:50:51.507 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 09:50:51.507 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 09:50:53.830 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 09:50:53.831 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 09:50:54.089 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 09:50:54.250 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 09:50:54.251 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 09:50:55.791 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 09:50:55.792 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 09:50:56.041 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 09:50:56.207 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 09:50:56.207 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 09:50:56.212 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 8.2 秒
+2026-03-20 09:55:48.002 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 09:55:48
+2026-03-20 09:55:49.672 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 09:55:49.673 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 09:55:50.138 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 09:55:50.592 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 09:55:50.593 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 09:55:51.501 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 09:55:51.501 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 09:55:51.816 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 09:55:51.978 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 09:55:51.978 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 09:55:53.987 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 09:55:53.987 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 09:55:54.349 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 09:55:54.500 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 09:55:54.500 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 09:55:54.515 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 6.5 秒
+2026-03-20 10:00:48.001 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:00:48
+2026-03-20 10:00:50.799 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:00:50.799 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:00:51.309 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:00:51.811 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:00:51.812 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:00:53.959 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:00:53.959 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:00:54.299 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:00:54.455 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:00:54.455 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:00:56.786 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:00:56.786 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:00:57.126 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:00:57.285 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:00:57.285 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:00:57.293 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 9.3 秒
+2026-03-20 10:05:48.006 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:05:48
+2026-03-20 10:05:49.596 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:05:49.596 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:05:50.280 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:05:50.740 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:05:50.741 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:05:52.878 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:05:52.878 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:05:53.201 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:05:53.381 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:05:53.381 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:05:59.537 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:05:59.537 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:05:59.870 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:06:00.032 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:06:00.033 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:06:00.042 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 12.0 秒
+2026-03-20 10:10:48.009 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:10:48
+2026-03-20 10:10:50.736 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:10:50.736 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:10:51.356 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:10:51.867 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:10:51.867 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:10:53.552 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:10:53.552 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:10:53.824 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:10:53.970 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:10:53.971 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:10:55.574 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:10:55.575 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:10:55.935 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:10:56.090 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:10:56.090 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:10:56.099 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 8.1 秒
+2026-03-20 10:15:48.016 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:15:48
+2026-03-20 10:15:49.697 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:15:49.697 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:15:50.267 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:15:50.905 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:15:50.907 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:15:52.583 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:15:52.583 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:15:52.827 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:15:53.000 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:15:53.001 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:15:56.044 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:15:56.044 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:15:56.291 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:15:56.464 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:15:56.464 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:15:56.472 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 8.5 秒
+2026-03-20 10:20:48.005 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:20:48
+2026-03-20 10:20:50.552 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:20:50.552 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:20:51.122 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:20:51.595 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:20:51.595 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:20:53.935 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:20:53.937 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:20:54.280 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:20:54.434 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:20:54.435 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:20:55.945 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:20:55.945 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:20:56.234 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:20:56.384 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:20:56.384 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:20:56.392 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 8.4 秒
+2026-03-20 10:25:48.008 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:25:48
+2026-03-20 10:25:50.139 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:25:50.139 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:25:50.638 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:25:51.493 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:25:51.493 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:25:55.010 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:25:55.010 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:25:55.535 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:25:55.843 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:25:55.844 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:25:57.837 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:25:57.837 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:25:58.153 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:25:58.310 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:25:58.310 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:25:58.321 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 10.3 秒
+2026-03-20 10:30:48.009 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:30:48
+2026-03-20 10:30:50.945 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:30:50.946 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:30:51.532 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:30:52.162 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:30:52.163 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:30:55.021 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:30:55.022 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:30:55.391 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:30:55.546 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:30:55.547 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:30:57.272 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:30:57.272 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:30:57.628 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:30:57.785 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:30:57.786 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:30:57.794 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 9.8 秒
+2026-03-20 10:35:48.010 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:35:48
+2026-03-20 10:35:49.634 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:35:49.634 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:35:50.176 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:35:50.666 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:35:50.667 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:35:52.742 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:35:52.743 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:35:53.016 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:35:53.164 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:35:53.165 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:35:54.629 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:35:54.630 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:35:54.935 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:35:55.094 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:35:55.094 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:35:55.106 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 7.1 秒
+2026-03-20 10:40:48.001 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:40:48
+2026-03-20 10:40:50.651 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:40:50.651 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:40:51.161 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:40:51.665 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:40:51.665 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:40:53.281 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:40:53.281 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:40:53.609 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:40:53.760 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:40:53.761 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:40:55.029 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:40:55.030 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:40:55.249 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:40:55.417 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:40:55.418 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:40:55.424 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 7.4 秒
+2026-03-20 10:45:48.002 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:45:48
+2026-03-20 10:45:50.614 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:45:50.615 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:45:51.295 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:45:51.853 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:45:51.854 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:45:54.610 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:45:54.610 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:45:54.832 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:45:55.106 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:45:55.108 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:45:58.841 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:45:58.842 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:45:59.236 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:45:59.397 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:45:59.397 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:45:59.407 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 11.4 秒
+2026-03-20 10:50:48.003 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:50:48
+2026-03-20 10:50:50.108 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:50:50.108 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:50:50.736 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:50:51.354 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:50:51.354 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:50:53.851 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:50:53.852 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:50:54.302 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:50:54.497 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:50:54.498 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:50:55.837 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:50:55.838 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:50:56.121 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:50:56.293 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:50:56.293 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:50:56.307 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 8.3 秒
+2026-03-20 10:55:48.006 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 10:55:48
+2026-03-20 10:55:49.989 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:55:49.989 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:55:50.634 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:55:51.131 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:55:51.132 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:55:52.695 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:55:52.695 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:55:53.090 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:55:53.260 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:55:53.260 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:55:57.256 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 10:55:57.257 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 10:55:57.688 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 10:55:57.857 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 10:55:57.857 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 10:55:57.865 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 9.9 秒
+2026-03-20 11:00:48.003 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:00:48
+2026-03-20 11:00:49.992 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:00:49.992 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:00:50.528 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:00:50.966 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:00:50.967 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:00:52.300 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:00:52.301 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:00:52.469 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:00:52.628 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:00:52.629 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:00:53.746 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:00:53.746 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:00:54.185 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:00:54.367 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:00:54.367 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:00:54.371 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 6.4 秒
+2026-03-20 11:05:48.009 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:05:48
+2026-03-20 11:05:50.848 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:05:50.849 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:05:51.368 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:05:51.847 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:05:51.848 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:05:54.106 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:05:54.106 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:05:54.417 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:05:54.566 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:05:54.566 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:05:55.787 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:05:55.787 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:05:56.168 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:05:56.326 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:05:56.326 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:05:56.331 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 8.3 秒
+2026-03-20 11:10:48.005 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:10:48
+2026-03-20 11:10:50.702 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:10:50.702 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:10:51.202 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:10:51.681 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:10:51.682 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:10:53.431 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:10:53.431 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:10:53.780 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:10:53.947 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:10:53.947 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:10:56.086 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:10:56.087 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:10:56.308 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:10:56.464 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:10:56.465 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:10:56.474 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 8.5 秒
+2026-03-20 11:15:48.005 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:15:48
+2026-03-20 11:15:49.719 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:15:49.720 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:15:50.378 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:15:50.863 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:15:50.863 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:15:53.603 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:15:53.603 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:15:53.979 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:15:54.148 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:15:54.148 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:15:56.659 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:15:56.660 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:15:56.989 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:15:57.208 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:15:57.208 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:15:57.224 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 9.2 秒
+2026-03-20 11:20:48.001 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:20:48
+2026-03-20 11:20:51.941 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:20:51.942 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:20:52.425 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:20:52.916 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:20:52.916 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:20:54.347 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:20:54.348 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:20:54.604 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:20:54.776 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:20:54.777 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:20:56.149 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:20:56.150 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:20:56.531 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:20:56.698 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:20:56.698 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:20:56.705 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 8.7 秒
+2026-03-20 11:25:48.009 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:25:48
+2026-03-20 11:25:57.427 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:25:57.428 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:25:58.429 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:25:59.431 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:25:59.431 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:26:04.717 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:26:04.717 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:26:05.202 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:26:05.389 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:26:05.389 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:26:09.289 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:26:09.289 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:26:09.660 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:26:09.914 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:26:09.914 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:26:09.920 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 21.9 秒
+2026-03-20 11:30:48.010 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:30:48
+2026-03-20 11:30:52.314 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:30:52.314 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:30:52.840 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:30:53.317 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:30:53.317 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:30:56.530 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:30:56.530 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:30:56.892 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:30:57.057 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:30:57.058 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:31:02.304 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:31:02.304 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:31:02.674 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:31:02.831 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:31:02.831 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:31:02.846 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 14.8 秒
+2026-03-20 11:35:48.008 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:35:48
+2026-03-20 11:35:49.336 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:35:49.337 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:35:49.890 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:35:50.371 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:35:50.371 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:35:51.952 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:35:51.953 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:35:52.320 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:35:52.489 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:35:52.489 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:35:55.584 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:35:55.585 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:35:55.875 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:35:56.033 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:35:56.033 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:35:56.044 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 8.0 秒
+2026-03-20 11:40:48.001 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:40:48
+2026-03-20 11:40:51.058 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:40:51.058 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:40:51.543 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:40:52.020 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:40:52.020 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:40:55.721 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:40:55.721 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:40:56.087 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:40:56.364 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:40:56.364 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:40:58.502 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:40:58.502 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:40:58.816 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:40:59.024 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:40:59.025 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:40:59.030 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 11.0 秒
+2026-03-20 11:45:48.010 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:45:48
+2026-03-20 11:45:50.685 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:45:50.685 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:45:51.152 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:45:51.617 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:45:51.619 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:45:55.223 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:45:55.223 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:45:55.769 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:45:55.920 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:45:55.921 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:45:57.230 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:45:57.231 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:45:57.561 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:45:57.739 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:45:57.739 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:45:57.741 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 9.7 秒
+2026-03-20 11:50:47.999 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:50:47
+2026-03-20 11:50:50.388 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:50:50.388 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:50:51.394 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:50:51.938 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:50:51.938 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:50:55.685 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:50:55.685 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:50:56.774 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:50:57.300 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:50:57.300 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:51:00.289 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:51:00.289 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:51:00.663 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:51:00.812 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:51:00.813 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:51:00.827 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 12.8 秒
+2026-03-20 11:55:48.000 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 11:55:48
+2026-03-20 11:56:06.662 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:56:06.663 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:56:10.804 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:56:13.642 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:56:13.643 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:56:25.757 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:56:25.758 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:56:26.049 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:56:26.227 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:56:26.228 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:56:27.818 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 11:56:27.819 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 11:56:28.148 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 11:56:28.314 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 11:56:28.314 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 11:56:28.323 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 40.3 秒
+2026-03-20 12:00:48.001 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 12:00:48
+2026-03-20 12:01:17.019 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 12:01:17.019 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 12:01:17.627 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 12:01:18.130 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 12:01:18.130 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 12:01:19.880 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 12:01:19.880 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 12:01:20.295 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 12:01:20.504 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 12:01:20.504 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 12:01:22.319 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 12:01:22.319 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 12:01:22.967 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 12:01:23.127 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 12:01:23.127 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 12:01:23.134 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 35.1 秒
+2026-03-20 12:05:48.008 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 12:05:48
+2026-03-20 12:05:50.495 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 12:05:50.496 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 12:05:51.016 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 12:05:51.496 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 12:05:51.496 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 12:05:56.782 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 12:05:56.782 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 12:05:57.196 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 12:05:57.376 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 12:05:57.376 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 12:05:59.863 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 12:05:59.865 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 12:06:00.157 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 12:06:00.292 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 12:06:00.292 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 12:06:00.301 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 12.3 秒
+2026-03-20 12:10:48.001 | INFO     | __main__:run_once:219 | 开始执行监控任务 - 2026-03-20 12:10:48
+2026-03-20 12:10:49.952 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 12:10:49.952 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 12:10:50.478 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 12:10:51.056 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 12:10:51.056 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 12:10:54.715 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 12:10:54.715 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 12:10:54.994 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 12:10:55.155 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 12:10:55.155 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 12:10:57.065 | WARNING  | src.collectors.news_collector:collect:128 | 东方财富 API 返回状态码：404
+2026-03-20 12:10:57.065 | INFO     | src.collectors.news_collector:collect:412 | 从 eastmoney 采集 0 条新闻
+2026-03-20 12:10:57.275 | INFO     | src.collectors.news_collector:collect:412 | 从 sina 采集 0 条新闻
+2026-03-20 12:10:57.448 | INFO     | src.collectors.news_collector:collect:412 | 从 cailian 采集 0 条新闻
+2026-03-20 12:10:57.448 | INFO     | src.collectors.news_collector:collect:425 | 采集完成，共 0 条唯一新闻
+2026-03-20 12:10:57.452 | INFO     | __main__:run_once:257 | 监控任务执行完成，耗时 9.5 秒

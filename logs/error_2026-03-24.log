@@ -1,0 +1,123 @@
+2026-03-24 00:07:04.840 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:07:10.537 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:07:16.043 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:08:13.857 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:14.272 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:14.650 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:15.056 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:15.417 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:15.782 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:35.639 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:35.881 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:36.092 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:36.314 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:36.550 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:36.783 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:54.387 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:54.613 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:54.855 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:55.095 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:55.308 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:55.561 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:16.542 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:17.017 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:17.527 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:18.028 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:18.509 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:18.999 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:54.624 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:55.124 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:55.585 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:56.055 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:56.540 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:57.002 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:16.428 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:16.827 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:17.172 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:17.563 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:17.955 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:18.343 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:54.507 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:54.853 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:55.241 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:55.614 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:55.999 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:56.396 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:16.419 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:16.772 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:17.115 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:17.448 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:17.796 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:18.232 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:54.498 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:54.832 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:55.197 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:55.542 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:55.954 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:56.332 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:16.427 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:16.801 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:17.145 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:17.539 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:17.903 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:18.284 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:54.422 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:54.672 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:54.934 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:55.202 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:55.460 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:55.705 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:16.402 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:16.760 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:17.174 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:17.543 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:17.930 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:18.304 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:54.548 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:54.946 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:55.312 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:55.684 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:56.058 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:56.446 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 09:35:47.947 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 09:35:54.255 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 09:36:10.124 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 10:19:25.318 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 10:19:31.377 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 10:19:46.378 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 10:19:56.886 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:24:55.430 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:29:58.935 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:35:01.376 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:40:05.932 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:45:01.093 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:50:20.065 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:55:08.029 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:00:16.160 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:04:57.069 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:10:02.419 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:17:26.639 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:20:04.108 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:24:58.520 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:30:07.567 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:30:56.537 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 11:31:07.057 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 11:31:12.550 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 11:31:22.834 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:40:24.781 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:43:05.052 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:46:28.357 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:51:29.352 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:56:52.930 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:01:40.852 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:06:43.230 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:14:34.379 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:16:22.359 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:21:20.285 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:26:25.339 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:29:14.906 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=4&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:29:21.000 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:29:27.650 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:56:58.787 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:57:07.365 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:57:17.136 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))

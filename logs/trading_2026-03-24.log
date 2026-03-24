@@ -1,0 +1,667 @@
+2026-03-24 00:02:53.727 | INFO     | src.utils.db:init_tables:252 | 数据库表初始化完成
+2026-03-24 00:02:53.728 | INFO     | __main__:initialize:124 | 数据库初始化成功
+2026-03-24 00:02:54.032 | INFO     | src.collectors.price_collector:_init_baostock:41 | Baostock 初始化成功
+2026-03-24 00:02:54.132 | INFO     | src.collectors.price_collector:_init_akshare:52 | AkShare 初始化成功
+2026-03-24 00:02:54.132 | INFO     | src.collectors.fund_collector:_init_akshare:33 | AkShare 初始化成功
+2026-03-24 00:02:54.132 | INFO     | __main__:initialize:130 | 数据采集器初始化成功
+2026-03-24 00:02:54.133 | INFO     | __main__:initialize:137 | 分析器初始化成功
+2026-03-24 00:02:54.133 | INFO     | src.strategy.improved_strategy:__init__:123 | 改进策略初始化完成 - 买入阈值：0.5, 止损倍数：2.0, 止盈比：2.5
+2026-03-24 00:02:54.133 | INFO     | __main__:initialize:148 | 改进策略初始化成功
+2026-03-24 00:02:54.133 | INFO     | __main__:initialize:186 | 决策引擎初始化成功
+2026-03-24 00:02:54.133 | INFO     | __main__:initialize:196 | 通知管理器初始化成功
+2026-03-24 00:02:54.135 | INFO     | __main__:initialize:200 | 调度器初始化成功
+2026-03-24 00:02:54.135 | INFO     | __main__:_load_stock_pool:212 | 正在加载股票池...
+2026-03-24 00:02:54.135 | INFO     | __main__:_load_stock_pool:244 | 股票池加载完成，共 3 只股票
+2026-03-24 00:02:54.135 | INFO     | __main__:initialize:206 | ==================================================
+2026-03-24 00:02:54.135 | INFO     | __main__:initialize:207 | A 股监控系统初始化完成
+2026-03-24 00:02:54.135 | INFO     | __main__:initialize:208 | ==================================================
+2026-03-24 00:02:54.135 | INFO     | __main__:start:585 | 启动监控系统...
+2026-03-24 00:02:54.137 | INFO     | __main__:run_once:249 | 开始执行监控任务 - 2026-03-24 00:02:54
+2026-03-24 00:02:55.024 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 00:02:56.358 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 00:02:58.559 | INFO     | __main__:run_once:334 | 000001: 触发止损，退出价=9.93
+2026-03-24 00:03:00.191 | INFO     | __main__:run_once:334 | 600000: 触发止损，退出价=8.23
+2026-03-24 00:03:01.694 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:03:01.694 | INFO     | __main__:run_once:365 | 监控任务执行完成，耗时 7.6 秒
+2026-03-24 00:06:55.753 | INFO     | src.utils.db:init_tables:252 | 数据库表初始化完成
+2026-03-24 00:06:55.754 | INFO     | __main__:initialize:124 | 数据库初始化成功
+2026-03-24 00:06:55.854 | INFO     | src.collectors.price_collector:_init_baostock:41 | Baostock 初始化成功
+2026-03-24 00:06:55.950 | INFO     | src.collectors.price_collector:_init_akshare:52 | AkShare 初始化成功
+2026-03-24 00:06:55.950 | INFO     | src.collectors.fund_collector:_init_akshare:33 | AkShare 初始化成功
+2026-03-24 00:06:55.950 | INFO     | __main__:initialize:130 | 数据采集器初始化成功
+2026-03-24 00:06:55.950 | INFO     | __main__:initialize:137 | 分析器初始化成功
+2026-03-24 00:06:55.950 | INFO     | src.strategy.improved_strategy:__init__:123 | 改进策略初始化完成 - 买入阈值：0.5, 止损倍数：2.0, 止盈比：2.5
+2026-03-24 00:06:55.950 | INFO     | __main__:initialize:148 | 改进策略初始化成功
+2026-03-24 00:06:55.950 | INFO     | __main__:initialize:186 | 决策引擎初始化成功
+2026-03-24 00:06:55.950 | INFO     | __main__:initialize:196 | 通知管理器初始化成功
+2026-03-24 00:06:55.952 | INFO     | __main__:initialize:200 | 调度器初始化成功
+2026-03-24 00:06:55.952 | INFO     | __main__:_load_stock_pool:212 | 正在加载股票池...
+2026-03-24 00:07:04.840 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:07:04.842 | INFO     | __main__:_load_stock_pool:224 | 股票 000001: 
+2026-03-24 00:07:10.537 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:07:10.537 | INFO     | __main__:_load_stock_pool:224 | 股票 600000: 
+2026-03-24 00:07:16.043 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:07:16.043 | INFO     | __main__:_load_stock_pool:224 | 股票 000002: 
+2026-03-24 00:07:16.043 | INFO     | __main__:_load_stock_pool:254 | 股票池加载完成，共 3 只股票
+2026-03-24 00:07:16.043 | INFO     | __main__:initialize:206 | ==================================================
+2026-03-24 00:07:16.045 | INFO     | __main__:initialize:207 | A 股监控系统初始化完成
+2026-03-24 00:07:16.045 | INFO     | __main__:initialize:208 | ==================================================
+2026-03-24 00:07:16.045 | INFO     | __main__:start:595 | 启动监控系统...
+2026-03-24 00:07:16.047 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 00:07:16
+2026-03-24 00:07:16.810 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 00:07:19.414 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 00:07:22.468 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 00:07:22.760 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 00:07:23.517 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:07:23.517 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 7.5 秒
+2026-03-24 00:07:54.147 | INFO     | __main__:run_once:249 | 开始执行监控任务 - 2026-03-24 00:07:54
+2026-03-24 00:08:13.434 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:08:13.557 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:08:13.857 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:13.860 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:08:13.956 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:08:14.272 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:14.274 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:08:14.365 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:08:14.650 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:14.652 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:08:14.742 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:08:15.056 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:15.058 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:08:15.156 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:08:15.417 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:15.418 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:08:15.499 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:08:15.782 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:08:15.997 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:08:15.997 | INFO     | __main__:run_once:365 | 监控任务执行完成，耗时 21.9 秒
+2026-03-24 00:12:16.049 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 00:12:16
+2026-03-24 00:12:35.255 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:35.350 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:35.639 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:35.640 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:35.719 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:35.881 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:35.882 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:35.961 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:36.092 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:36.092 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:36.171 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:36.314 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:36.316 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:36.403 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:36.550 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:36.550 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:36.641 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:36.783 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:36.910 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:12:36.911 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 20.9 秒
+2026-03-24 00:12:54.151 | INFO     | __main__:run_once:249 | 开始执行监控任务 - 2026-03-24 00:12:54
+2026-03-24 00:12:54.151 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:54.247 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:54.387 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:54.387 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:54.469 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:54.613 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:54.614 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:54.697 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:54.855 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:54.856 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:54.948 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:55.095 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:55.095 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:55.179 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:55.308 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:55.308 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:12:55.409 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:12:55.561 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:12:55.690 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:12:55.691 | INFO     | __main__:run_once:365 | 监控任务执行完成，耗时 1.5 秒
+2026-03-24 00:17:16.059 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 00:17:16
+2026-03-24 00:17:16.059 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:16.196 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:16.542 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:16.545 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:16.695 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:17.017 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:17.017 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:17.164 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:17.527 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:17.527 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:17.683 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:18.028 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:18.028 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:18.169 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:18.509 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:18.509 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:18.645 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:18.999 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:19.138 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:17:19.138 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 3.1 秒
+2026-03-24 00:17:54.140 | INFO     | __main__:run_once:249 | 开始执行监控任务 - 2026-03-24 00:17:54
+2026-03-24 00:17:54.140 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:54.314 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:54.624 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:54.630 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:54.779 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:55.124 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:55.129 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:55.275 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:55.585 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:55.588 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:55.734 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:56.055 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:56.057 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:56.205 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:56.540 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:56.540 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:17:56.673 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:17:57.002 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:17:57.145 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:17:57.147 | INFO     | __main__:run_once:365 | 监控任务执行完成，耗时 3.0 秒
+2026-03-24 00:22:16.061 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 00:22:16
+2026-03-24 00:22:16.061 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:16.145 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:16.428 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:16.428 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:16.533 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:16.827 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:16.833 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:16.916 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:17.172 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:17.174 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:17.275 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:17.563 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:17.563 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:17.664 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:17.955 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:17.955 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:18.052 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:18.343 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:18.484 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:22:18.487 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 2.4 秒
+2026-03-24 00:22:54.148 | INFO     | __main__:run_once:249 | 开始执行监控任务 - 2026-03-24 00:22:54
+2026-03-24 00:22:54.148 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:54.263 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:54.507 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:54.508 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:54.588 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:54.853 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:54.856 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:54.953 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:55.241 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:55.241 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:55.348 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:55.614 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:55.620 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:55.723 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:55.999 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:55.999 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:22:56.103 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:22:56.396 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:22:56.538 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:22:56.538 | INFO     | __main__:run_once:365 | 监控任务执行完成，耗时 2.4 秒
+2026-03-24 00:27:16.059 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 00:27:16
+2026-03-24 00:27:16.059 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:16.156 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:16.419 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:16.419 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:16.512 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:16.772 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:16.778 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:16.867 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:17.115 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:17.118 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:17.208 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:17.448 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:17.450 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:17.542 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:17.796 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:17.801 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:17.906 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:18.232 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:18.374 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:27:18.374 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 2.3 秒
+2026-03-24 00:27:54.144 | INFO     | __main__:run_once:249 | 开始执行监控任务 - 2026-03-24 00:27:54
+2026-03-24 00:27:54.144 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:54.242 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:54.498 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:54.498 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:54.583 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:54.832 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:54.836 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:54.930 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:55.197 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:55.197 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:55.300 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:55.542 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:55.547 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:55.646 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:55.954 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:55.954 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:27:56.034 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:27:56.332 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:27:56.496 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:27:56.499 | INFO     | __main__:run_once:365 | 监控任务执行完成，耗时 2.4 秒
+2026-03-24 00:32:16.051 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 00:32:16
+2026-03-24 00:32:16.052 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:16.167 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:16.427 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:16.428 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:16.531 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:16.801 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:16.801 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:16.898 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:17.145 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:17.145 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:17.254 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:17.539 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:17.541 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:17.641 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:17.903 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:17.904 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:17.988 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:18.284 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:18.421 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:32:18.422 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 2.4 秒
+2026-03-24 00:32:54.151 | INFO     | __main__:run_once:249 | 开始执行监控任务 - 2026-03-24 00:32:54
+2026-03-24 00:32:54.152 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:54.255 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:54.422 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:54.425 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:54.499 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:54.672 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:54.673 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:54.756 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:54.934 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:54.935 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:55.043 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:55.202 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:55.204 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:55.304 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:55.460 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:55.461 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:32:55.543 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:32:55.705 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:32:55.825 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:32:55.825 | INFO     | __main__:run_once:365 | 监控任务执行完成，耗时 1.7 秒
+2026-03-24 00:37:16.048 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 00:37:16
+2026-03-24 00:37:16.049 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:16.153 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:16.402 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:16.402 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:16.496 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:16.760 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:16.761 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:16.863 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:17.174 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:17.177 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:17.285 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:17.543 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:17.546 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:17.643 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:17.930 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:17.932 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:18.035 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:18.304 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:18.452 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:37:18.453 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 2.4 秒
+2026-03-24 00:37:54.139 | INFO     | __main__:run_once:249 | 开始执行监控任务 - 2026-03-24 00:37:54
+2026-03-24 00:37:54.140 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:54.244 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:54.548 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:54.552 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:54.655 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:54.946 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:54.948 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:55.042 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:55.312 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:55.313 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:55.413 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:55.684 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:55.686 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:55.779 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:56.058 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:56.058 | WARNING  | src.collectors.price_collector:_get_daily_kline:169 | Baostock 获取失败，尝试 AkShare: Baostock 错误：网络接收错误。
+2026-03-24 00:37:56.163 | WARNING  | src.collectors.price_collector:_get_daily_kline:184 | AkShare 获取失败，尝试直接连接：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 00:37:56.446 | ERROR    | src.collectors.price_collector:_get_daily_kline:190 | 获取日线数据失败：Remote end closed connection without response
+2026-03-24 00:37:56.615 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 00:37:56.615 | INFO     | __main__:run_once:365 | 监控任务执行完成，耗时 2.5 秒
+2026-03-24 09:35:30.569 | INFO     | src.utils.db:init_tables:252 | 数据库表初始化完成
+2026-03-24 09:35:30.570 | INFO     | __main__:initialize:124 | 数据库初始化成功
+2026-03-24 09:35:36.406 | INFO     | src.collectors.price_collector:_init_baostock:41 | Baostock 初始化成功
+2026-03-24 09:35:36.522 | INFO     | src.collectors.price_collector:_init_akshare:52 | AkShare 初始化成功
+2026-03-24 09:35:36.522 | INFO     | src.collectors.fund_collector:_init_akshare:33 | AkShare 初始化成功
+2026-03-24 09:35:36.522 | INFO     | __main__:initialize:130 | 数据采集器初始化成功
+2026-03-24 09:35:36.523 | INFO     | __main__:initialize:137 | 分析器初始化成功
+2026-03-24 09:35:36.523 | INFO     | src.strategy.improved_strategy:__init__:123 | 改进策略初始化完成 - 买入阈值：0.5, 止损倍数：2.0, 止盈比：2.5
+2026-03-24 09:35:36.523 | INFO     | __main__:initialize:148 | 改进策略初始化成功
+2026-03-24 09:35:36.523 | INFO     | __main__:initialize:186 | 决策引擎初始化成功
+2026-03-24 09:35:36.523 | INFO     | __main__:initialize:196 | 通知管理器初始化成功
+2026-03-24 09:35:36.529 | INFO     | __main__:initialize:200 | 调度器初始化成功
+2026-03-24 09:35:36.529 | INFO     | __main__:_load_stock_pool:212 | 正在加载股票池...
+2026-03-24 09:35:47.947 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 09:35:47.957 | INFO     | __main__:_load_stock_pool:224 | 股票 000001: 
+2026-03-24 09:35:54.255 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 09:35:54.255 | INFO     | __main__:_load_stock_pool:224 | 股票 600000: 
+2026-03-24 09:36:10.124 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 09:36:10.125 | INFO     | __main__:_load_stock_pool:224 | 股票 000002: 
+2026-03-24 09:36:10.125 | INFO     | __main__:_load_stock_pool:254 | 股票池加载完成，共 3 只股票
+2026-03-24 09:36:10.125 | INFO     | __main__:initialize:206 | ==================================================
+2026-03-24 09:36:10.125 | INFO     | __main__:initialize:207 | A 股监控系统初始化完成
+2026-03-24 09:36:10.125 | INFO     | __main__:initialize:208 | ==================================================
+2026-03-24 09:36:10.126 | INFO     | __main__:start:595 | 启动监控系统...
+2026-03-24 09:36:10.138 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 09:36:10
+2026-03-24 09:36:11.034 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 09:36:12.574 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 09:36:16.555 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 09:36:17.614 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 09:36:21.106 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 09:36:21.106 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 11.0 秒
+2026-03-24 09:41:10.138 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 09:41:10
+2026-03-24 09:41:11.890 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 09:41:13.297 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 09:41:17.143 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 09:41:18.842 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 09:41:20.560 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 09:41:20.561 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 10.4 秒
+2026-03-24 09:46:10.138 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 09:46:10
+2026-03-24 09:46:13.596 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 09:46:14.503 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 09:46:21.894 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 09:46:22.783 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 09:46:24.974 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 09:46:24.975 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 14.8 秒
+2026-03-24 09:51:10.138 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 09:51:10
+2026-03-24 09:51:11.242 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 09:51:13.785 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 09:51:16.463 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 09:51:17.171 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 09:51:18.263 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 09:51:18.263 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 8.1 秒
+2026-03-24 09:56:10.140 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 09:56:10
+2026-03-24 09:56:11.471 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 09:56:15.503 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 09:56:21.899 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 09:56:24.812 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 09:56:27.422 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 09:56:27.424 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 17.3 秒
+2026-03-24 10:01:10.135 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:01:10
+2026-03-24 10:01:13.225 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:01:16.009 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:01:18.778 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:01:23.936 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:01:27.919 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 10:01:27.922 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 17.8 秒
+2026-03-24 10:06:10.128 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:06:10
+2026-03-24 10:06:10.915 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:06:12.474 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:06:15.918 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:06:16.941 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:06:23.249 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 10:06:23.250 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 13.1 秒
+2026-03-24 10:11:10.132 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:11:10
+2026-03-24 10:11:13.130 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:11:17.390 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:11:19.177 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:11:20.357 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:11:32.569 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 10:11:32.570 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 22.4 秒
+2026-03-24 10:16:10.141 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:16:10
+2026-03-24 10:16:10.964 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:16:14.036 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:16:16.600 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:16:17.689 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:16:18.787 | INFO     | src.utils.notification:send_market_summary:499 | 监控摘要发送到钉钉成功
+2026-03-24 10:16:18.788 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 8.6 秒
+2026-03-24 10:19:11.434 | INFO     | src.utils.db:init_tables:252 | 数据库表初始化完成
+2026-03-24 10:19:11.435 | INFO     | __main__:initialize:124 | 数据库初始化成功
+2026-03-24 10:19:16.097 | INFO     | src.collectors.price_collector:_init_baostock:41 | Baostock 初始化成功
+2026-03-24 10:19:16.537 | INFO     | src.collectors.price_collector:_init_akshare:52 | AkShare 初始化成功
+2026-03-24 10:19:16.537 | INFO     | src.collectors.fund_collector:_init_akshare:33 | AkShare 初始化成功
+2026-03-24 10:19:16.538 | INFO     | __main__:initialize:130 | 数据采集器初始化成功
+2026-03-24 10:19:16.538 | INFO     | __main__:initialize:137 | 分析器初始化成功
+2026-03-24 10:19:16.538 | INFO     | src.strategy.improved_strategy:__init__:123 | 改进策略初始化完成 - 买入阈值：0.5, 止损倍数：2.0, 止盈比：2.5
+2026-03-24 10:19:16.538 | INFO     | __main__:initialize:148 | 改进策略初始化成功
+2026-03-24 10:19:16.539 | INFO     | __main__:initialize:186 | 决策引擎初始化成功
+2026-03-24 10:19:16.539 | INFO     | __main__:initialize:196 | 通知管理器初始化成功
+2026-03-24 10:19:16.542 | INFO     | __main__:initialize:200 | 调度器初始化成功
+2026-03-24 10:19:16.542 | INFO     | __main__:_load_stock_pool:212 | 正在加载股票池...
+2026-03-24 10:19:25.318 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 10:19:25.318 | INFO     | __main__:_load_stock_pool:224 | 股票 000001: 
+2026-03-24 10:19:31.377 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 10:19:31.377 | INFO     | __main__:_load_stock_pool:224 | 股票 600000: 
+2026-03-24 10:19:46.378 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 10:19:46.378 | INFO     | __main__:_load_stock_pool:224 | 股票 000002: 
+2026-03-24 10:19:46.379 | INFO     | __main__:_load_stock_pool:254 | 股票池加载完成，共 3 只股票
+2026-03-24 10:19:46.379 | INFO     | __main__:initialize:206 | ==================================================
+2026-03-24 10:19:46.380 | INFO     | __main__:initialize:207 | A 股监控系统初始化完成
+2026-03-24 10:19:46.380 | INFO     | __main__:initialize:208 | ==================================================
+2026-03-24 10:19:46.380 | INFO     | __main__:start:642 | 启动监控系统...
+2026-03-24 10:19:46.387 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:19:46
+2026-03-24 10:19:47.370 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:19:49.750 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:19:53.795 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:19:55.850 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:19:56.886 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:24:46.396 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:24:46
+2026-03-24 10:24:48.084 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:24:49.187 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:24:52.287 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:24:53.808 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:24:55.430 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:29:46.385 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:29:46
+2026-03-24 10:29:47.871 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:29:51.535 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:29:55.434 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:29:57.662 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:29:58.935 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:34:46.398 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:34:46
+2026-03-24 10:34:49.664 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:34:51.272 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:34:56.894 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:34:59.207 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:35:01.376 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:39:46.393 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:39:46
+2026-03-24 10:39:49.729 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:39:52.912 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:40:00.954 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:40:03.159 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:40:05.932 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:44:46.385 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:44:46
+2026-03-24 10:44:49.120 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:44:52.557 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:44:56.486 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:44:59.457 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:45:01.093 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:49:46.383 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:49:46
+2026-03-24 10:50:04.138 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:50:07.415 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:50:10.779 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:50:12.504 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:50:20.065 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:54:46.394 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:54:46
+2026-03-24 10:54:48.567 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 10:54:50.683 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 10:55:01.570 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 10:55:04.030 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 10:55:08.029 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 10:59:46.393 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 10:59:46
+2026-03-24 11:00:05.676 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 11:00:09.179 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 11:00:12.458 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 11:00:13.882 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 11:00:16.160 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:04:46.397 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 11:04:46
+2026-03-24 11:04:48.366 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 11:04:49.940 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 11:04:53.905 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 11:04:55.371 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 11:04:57.069 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:09:46.387 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 11:09:46
+2026-03-24 11:09:51.411 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 11:09:54.924 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 11:09:58.206 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 11:09:59.207 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 11:10:02.419 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:14:46.387 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 11:14:46
+2026-03-24 11:14:50.393 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 11:14:54.747 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 11:15:04.392 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 11:15:10.669 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 11:17:26.639 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:19:46.391 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 11:19:46
+2026-03-24 11:19:53.050 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 11:19:55.286 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 11:19:59.128 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 11:20:01.971 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 11:20:04.108 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:24:46.385 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 11:24:46
+2026-03-24 11:24:48.272 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 11:24:49.511 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 11:24:52.429 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 11:24:56.337 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 11:24:58.520 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:29:46.386 | INFO     | __main__:run_once:259 | 开始执行监控任务 - 2026-03-24 11:29:46
+2026-03-24 11:29:48.292 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 000001: 入场价=10.31, 止损=9.93, 止盈=11.25
+2026-03-24 11:29:50.877 | INFO     | src.strategy.improved_strategy:update_position:421 | 新建持仓 600000: 入场价=8.53, 止损=8.23, 止盈=9.27
+2026-03-24 11:30:00.535 | INFO     | __main__:run_once:344 | 000001: 触发止损，退出价=9.93
+2026-03-24 11:30:04.801 | INFO     | __main__:run_once:344 | 600000: 触发止损，退出价=8.23
+2026-03-24 11:30:07.567 | ERROR    | __main__:run_once:378 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:30:48.138 | INFO     | src.utils.db:init_tables:252 | 数据库表初始化完成
+2026-03-24 11:30:48.139 | INFO     | __main__:initialize:124 | 数据库初始化成功
+2026-03-24 11:30:50.760 | INFO     | src.collectors.price_collector:_init_baostock:41 | Baostock 初始化成功
+2026-03-24 11:30:50.867 | INFO     | src.collectors.price_collector:_init_akshare:52 | AkShare 初始化成功
+2026-03-24 11:30:50.867 | INFO     | src.collectors.fund_collector:_init_akshare:33 | AkShare 初始化成功
+2026-03-24 11:30:50.867 | INFO     | __main__:initialize:130 | 数据采集器初始化成功
+2026-03-24 11:30:50.867 | INFO     | __main__:initialize:137 | 分析器初始化成功
+2026-03-24 11:30:50.867 | INFO     | src.strategy.improved_strategy:__init__:124 | 改进策略初始化完成 - 买入阈值：0.6, 止损倍数：2.5, 止盈比：3.0
+2026-03-24 11:30:50.867 | INFO     | __main__:initialize:150 | 改进策略初始化成功
+2026-03-24 11:30:50.867 | INFO     | __main__:initialize:188 | 决策引擎初始化成功
+2026-03-24 11:30:50.867 | INFO     | __main__:initialize:198 | 通知管理器初始化成功
+2026-03-24 11:30:50.868 | INFO     | __main__:initialize:202 | 调度器初始化成功
+2026-03-24 11:30:50.869 | INFO     | __main__:_load_stock_pool:214 | 正在加载股票池...
+2026-03-24 11:30:56.537 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 11:30:56.537 | INFO     | __main__:_load_stock_pool:226 | 股票 000001: 
+2026-03-24 11:31:07.057 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 11:31:07.058 | INFO     | __main__:_load_stock_pool:226 | 股票 600000: 
+2026-03-24 11:31:12.550 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-24 11:31:12.552 | INFO     | __main__:_load_stock_pool:226 | 股票 000002: 
+2026-03-24 11:31:12.552 | INFO     | __main__:_load_stock_pool:256 | 股票池加载完成，共 3 只股票
+2026-03-24 11:31:12.552 | INFO     | __main__:initialize:208 | ==================================================
+2026-03-24 11:31:12.552 | INFO     | __main__:initialize:209 | A 股监控系统初始化完成
+2026-03-24 11:31:12.552 | INFO     | __main__:initialize:210 | ==================================================
+2026-03-24 11:31:12.552 | INFO     | __main__:start:644 | 启动监控系统...
+2026-03-24 11:31:12.554 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 11:31:12
+2026-03-24 11:31:22.834 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:36:12.555 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 11:36:12
+2026-03-24 11:40:24.781 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:41:12.570 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 11:41:12
+2026-03-24 11:43:05.052 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:46:12.567 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 11:46:12
+2026-03-24 11:46:28.357 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:51:12.563 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 11:51:12
+2026-03-24 11:51:29.352 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 11:56:12.561 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 11:56:12
+2026-03-24 11:56:52.930 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:01:12.564 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:01:12
+2026-03-24 12:01:40.852 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:06:12.554 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:06:12
+2026-03-24 12:06:43.230 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:11:12.556 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:11:12
+2026-03-24 12:14:34.379 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:16:12.565 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:16:12
+2026-03-24 12:16:22.359 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:21:12.559 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:21:12
+2026-03-24 12:21:20.285 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:26:12.566 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:26:12
+2026-03-24 12:26:25.339 | ERROR    | __main__:run_once:380 | 执行监控任务失败：'gbk' codec can't encode character '\U0001f680' in position 1: illegal multibyte sequence
+2026-03-24 12:29:02.897 | INFO     | src.utils.db:init_tables:252 | 数据库表初始化完成
+2026-03-24 12:29:02.898 | INFO     | __main__:initialize:124 | 数据库初始化成功
+2026-03-24 12:29:03.298 | INFO     | src.collectors.price_collector:_init_baostock:41 | Baostock 初始化成功
+2026-03-24 12:29:03.531 | INFO     | src.collectors.price_collector:_init_akshare:52 | AkShare 初始化成功
+2026-03-24 12:29:03.531 | INFO     | src.collectors.fund_collector:_init_akshare:33 | AkShare 初始化成功
+2026-03-24 12:29:03.531 | INFO     | __main__:initialize:130 | 数据采集器初始化成功
+2026-03-24 12:29:03.531 | INFO     | __main__:initialize:137 | 分析器初始化成功
+2026-03-24 12:29:03.531 | INFO     | src.strategy.improved_strategy:__init__:124 | 改进策略初始化完成 - 买入阈值：0.6, 止损倍数：2.5, 止盈比：3.0
+2026-03-24 12:29:03.531 | INFO     | __main__:initialize:150 | 改进策略初始化成功
+2026-03-24 12:29:03.531 | INFO     | __main__:initialize:188 | 决策引擎初始化成功
+2026-03-24 12:29:03.531 | INFO     | __main__:initialize:198 | 通知管理器初始化成功
+2026-03-24 12:29:03.533 | INFO     | __main__:initialize:202 | 调度器初始化成功
+2026-03-24 12:29:03.533 | INFO     | __main__:_load_stock_pool:214 | 正在加载股票池...
+2026-03-24 12:29:14.906 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=4&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:29:14.906 | INFO     | __main__:_load_stock_pool:226 | 股票 000001: 
+2026-03-24 12:29:21.000 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:29:21.000 | INFO     | __main__:_load_stock_pool:226 | 股票 600000: 
+2026-03-24 12:29:27.650 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:29:27.651 | INFO     | __main__:_load_stock_pool:226 | 股票 000002: 
+2026-03-24 12:29:27.651 | INFO     | __main__:_load_stock_pool:256 | 股票池加载完成，共 3 只股票
+2026-03-24 12:29:27.651 | INFO     | __main__:initialize:208 | ==================================================
+2026-03-24 12:29:27.651 | INFO     | __main__:initialize:209 | A 股监控系统初始化完成
+2026-03-24 12:29:27.651 | INFO     | __main__:initialize:210 | ==================================================
+2026-03-24 12:29:27.651 | INFO     | __main__:start:644 | 启动监控系统...
+2026-03-24 12:29:27.657 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:29:27
+2026-03-24 12:29:37.097 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000001
+2026-03-24 12:29:37.482 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000002
+2026-03-24 12:29:37.482 | INFO     | __main__:_send_improved_notifications:592 | 已发送 2 个交易信号通知
+2026-03-24 12:29:37.844 | INFO     | src.utils.notification:send_market_summary:539 | 监控摘要发送到钉钉成功
+2026-03-24 12:29:37.845 | INFO     | __main__:run_once:377 | 监控任务执行完成，耗时 10.2 秒
+2026-03-24 12:34:27.660 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:34:27
+2026-03-24 12:34:41.032 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000001
+2026-03-24 12:34:41.384 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000002
+2026-03-24 12:34:41.384 | INFO     | __main__:_send_improved_notifications:592 | 已发送 2 个交易信号通知
+2026-03-24 12:34:41.719 | INFO     | src.utils.notification:send_market_summary:539 | 监控摘要发送到钉钉成功
+2026-03-24 12:34:41.721 | INFO     | __main__:run_once:377 | 监控任务执行完成，耗时 14.1 秒
+2026-03-24 12:39:27.667 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:39:27
+2026-03-24 12:39:36.710 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000001
+2026-03-24 12:39:37.110 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000002
+2026-03-24 12:39:37.111 | INFO     | __main__:_send_improved_notifications:592 | 已发送 2 个交易信号通知
+2026-03-24 12:39:37.449 | INFO     | src.utils.notification:send_market_summary:539 | 监控摘要发送到钉钉成功
+2026-03-24 12:39:37.449 | INFO     | __main__:run_once:377 | 监控任务执行完成，耗时 9.8 秒
+2026-03-24 12:44:27.668 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:44:27
+2026-03-24 12:44:38.696 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000001
+2026-03-24 12:44:39.051 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000002
+2026-03-24 12:44:39.051 | INFO     | __main__:_send_improved_notifications:592 | 已发送 2 个交易信号通知
+2026-03-24 12:44:39.382 | INFO     | src.utils.notification:send_market_summary:539 | 监控摘要发送到钉钉成功
+2026-03-24 12:44:39.382 | INFO     | __main__:run_once:377 | 监控任务执行完成，耗时 11.7 秒
+2026-03-24 12:49:27.656 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:49:27
+2026-03-24 12:49:36.447 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000001
+2026-03-24 12:49:36.809 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000002
+2026-03-24 12:49:36.809 | INFO     | __main__:_send_improved_notifications:592 | 已发送 2 个交易信号通知
+2026-03-24 12:49:37.186 | INFO     | src.utils.notification:send_market_summary:539 | 监控摘要发送到钉钉成功
+2026-03-24 12:49:37.187 | INFO     | __main__:run_once:377 | 监控任务执行完成，耗时 9.5 秒
+2026-03-24 12:54:27.654 | INFO     | __main__:run_once:261 | 开始执行监控任务 - 2026-03-24 12:54:27
+2026-03-24 12:54:35.767 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000001
+2026-03-24 12:54:36.147 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000002
+2026-03-24 12:54:36.148 | INFO     | __main__:_send_improved_notifications:592 | 已发送 2 个交易信号通知
+2026-03-24 12:54:36.486 | INFO     | src.utils.notification:send_market_summary:539 | 监控摘要发送到钉钉成功
+2026-03-24 12:54:36.488 | INFO     | __main__:run_once:377 | 监控任务执行完成，耗时 8.8 秒
+2026-03-24 12:56:49.419 | INFO     | src.utils.db:init_tables:252 | 数据库表初始化完成
+2026-03-24 12:56:49.419 | INFO     | __main__:initialize:124 | 数据库初始化成功
+2026-03-24 12:56:49.634 | INFO     | src.collectors.price_collector:_init_baostock:41 | Baostock 初始化成功
+2026-03-24 12:56:49.735 | INFO     | src.collectors.price_collector:_init_akshare:52 | AkShare 初始化成功
+2026-03-24 12:56:49.736 | INFO     | src.collectors.fund_collector:_init_akshare:33 | AkShare 初始化成功
+2026-03-24 12:56:49.736 | INFO     | __main__:initialize:130 | 数据采集器初始化成功
+2026-03-24 12:56:49.736 | INFO     | __main__:initialize:137 | 分析器初始化成功
+2026-03-24 12:56:49.736 | INFO     | src.strategy.improved_strategy:__init__:124 | 改进策略初始化完成 - 买入阈值：0.7, 止损倍数：3.0, 止盈比：2.5
+2026-03-24 12:56:49.736 | INFO     | __main__:initialize:151 | V2 改进策略初始化成功 - 实盘优化参数：买入阈值 0.7, 最少 5 条件，止损 8%-20%
+2026-03-24 12:56:49.736 | INFO     | __main__:initialize:189 | 决策引擎初始化成功
+2026-03-24 12:56:49.736 | INFO     | __main__:initialize:199 | 通知管理器初始化成功
+2026-03-24 12:56:49.737 | INFO     | __main__:initialize:203 | 调度器初始化成功
+2026-03-24 12:56:49.737 | INFO     | __main__:_load_stock_pool:215 | 正在加载股票池...
+2026-03-24 12:56:58.787 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:56:58.788 | INFO     | __main__:_load_stock_pool:227 | 股票 000001: 
+2026-03-24 12:57:07.365 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:57:07.366 | INFO     | __main__:_load_stock_pool:227 | 股票 600000: 
+2026-03-24 12:57:17.136 | ERROR    | src.collectors.price_collector:get_stock_info:511 | 获取股票信息失败：HTTPSConnectionPool(host='82.push2.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/clist/get?pn=1&pz=100&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&fid=f12&fs=m%3A0+t%3A6%2Cm%3A0+t%3A80%2Cm%3A1+t%3A2%2Cm%3A1+t%3A23%2Cm%3A0+t%3A81+s%3A2048&fields=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf12%2Cf13%2Cf14%2Cf15%2Cf16%2Cf17%2Cf18%2Cf20%2Cf21%2Cf23%2Cf24%2Cf25%2Cf22%2Cf11%2Cf62%2Cf128%2Cf136%2Cf115%2Cf152 (Caused by ProxyError('Unable to connect to proxy', RemoteDisconnected('Remote end closed connection without response')))
+2026-03-24 12:57:17.137 | INFO     | __main__:_load_stock_pool:227 | 股票 000002: 
+2026-03-24 12:57:17.137 | INFO     | __main__:_load_stock_pool:257 | 股票池加载完成，共 3 只股票
+2026-03-24 12:57:17.137 | INFO     | __main__:initialize:209 | ==================================================
+2026-03-24 12:57:17.137 | INFO     | __main__:initialize:210 | A 股监控系统初始化完成
+2026-03-24 12:57:17.137 | INFO     | __main__:initialize:211 | ==================================================
+2026-03-24 12:57:17.137 | INFO     | __main__:run_once:262 | 开始执行监控任务 - 2026-03-24 12:57:17
+2026-03-24 12:57:35.926 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000001
+2026-03-24 12:57:36.324 | INFO     | src.utils.notification:_send_dingtalk:282 | 钉钉通知发送成功：000002
+2026-03-24 12:57:36.325 | INFO     | __main__:_send_improved_notifications:590 | 已发送 2 个交易信号通知
+2026-03-24 12:57:36.674 | INFO     | src.utils.notification:send_market_summary:539 | 监控摘要发送到钉钉成功
+2026-03-24 12:57:36.675 | INFO     | __main__:run_once:375 | 监控任务执行完成，耗时 19.5 秒

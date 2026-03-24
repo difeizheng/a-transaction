@@ -18,10 +18,12 @@ class FusionResult:
     news_score: float       # 新闻得分
     technical_score: float  # 技术面得分
     fund_score: float       # 资金面得分
+    volatility_score: float # 波动率得分
     sentiment_score: float  # 情绪得分
     total_score: float      # 综合得分
     signal: str             # 最终信号
     confidence: float       # 置信度
+    current_price: float    # 当前价格
     timestamp: datetime
 
 
@@ -29,7 +31,7 @@ class SignalFusionEngine:
     """
     信号融合引擎
 
-    综合得分 = 新闻分 × 0.35 + 技术分 × 0.30 + 资金分 × 0.25 + 情绪分 × 0.10
+    综合得分 = 新闻分 × 0.30 + 技术分 × 0.25 + 资金分 × 0.20 + 波动率分 × 0.15 + 情绪分 × 0.10
 
     信号判定:
     - 综合得分 >= 0.7: 强烈买入
@@ -41,9 +43,10 @@ class SignalFusionEngine:
 
     def __init__(
         self,
-        news_weight: float = 0.35,
-        technical_weight: float = 0.30,
-        fund_weight: float = 0.25,
+        news_weight: float = 0.30,
+        technical_weight: float = 0.25,
+        fund_weight: float = 0.20,
+        volatility_weight: float = 0.15,
         sentiment_weight: float = 0.10,
     ):
         """
@@ -53,15 +56,17 @@ class SignalFusionEngine:
             news_weight: 新闻权重
             technical_weight: 技术面权重
             fund_weight: 资金面权重
+            volatility_weight: 波动率权重
             sentiment_weight: 情绪权重
         """
         self.news_weight = news_weight
         self.technical_weight = technical_weight
         self.fund_weight = fund_weight
+        self.volatility_weight = volatility_weight
         self.sentiment_weight = sentiment_weight
 
         # 验证权重和为 1
-        total = news_weight + technical_weight + fund_weight + sentiment_weight
+        total = news_weight + technical_weight + fund_weight + volatility_weight + sentiment_weight
         if abs(total - 1.0) > 0.001:
             logger.warning(f"权重和不为 1 ({total})，将自动归一化")
             self._normalize_weights()
@@ -72,16 +77,19 @@ class SignalFusionEngine:
             self.news_weight +
             self.technical_weight +
             self.fund_weight +
+            self.volatility_weight +
             self.sentiment_weight
         )
         self.news_weight /= total
         self.technical_weight /= total
         self.fund_weight /= total
+        self.volatility_weight /= total
         self.sentiment_weight /= total
         logger.info(
             f"归一化后权重：新闻={self.news_weight:.2f}, "
             f"技术={self.technical_weight:.2f}, "
             f"资金={self.fund_weight:.2f}, "
+            f"波动率={self.volatility_weight:.2f}, "
             f"情绪={self.sentiment_weight:.2f}"
         )
 
@@ -92,7 +100,9 @@ class SignalFusionEngine:
         news_score: float,
         technical_score: float,
         fund_score: float,
+        volatility_score: float,
         sentiment_score: float,
+        current_price: float = 0.0,
     ) -> FusionResult:
         """
         融合多因子信号
@@ -103,7 +113,9 @@ class SignalFusionEngine:
             news_score: 新闻得分 [-1, 1]
             technical_score: 技术面得分 [-1, 1]
             fund_score: 资金面得分 [-1, 1]
+            volatility_score: 波动率得分 [-1, 1]
             sentiment_score: 情绪得分 [-1, 1]
+            current_price: 当前价格
 
         Returns:
             融合结果
@@ -113,6 +125,7 @@ class SignalFusionEngine:
             news_score * self.news_weight +
             technical_score * self.technical_weight +
             fund_score * self.fund_weight +
+            volatility_score * self.volatility_weight +
             sentiment_score * self.sentiment_weight
         )
 
@@ -124,7 +137,7 @@ class SignalFusionEngine:
 
         # 计算置信度（各因子一致性）
         confidence = self._calculate_confidence(
-            news_score, technical_score, fund_score, sentiment_score
+            news_score, technical_score, fund_score, volatility_score, sentiment_score
         )
 
         return FusionResult(
@@ -133,10 +146,12 @@ class SignalFusionEngine:
             news_score=news_score,
             technical_score=technical_score,
             fund_score=fund_score,
+            volatility_score=volatility_score,
             sentiment_score=sentiment_score,
             total_score=total_score,
             signal=signal,
             confidence=confidence,
+            current_price=current_price,
             timestamp=datetime.now(),
         )
 
@@ -166,6 +181,7 @@ class SignalFusionEngine:
         news_score: float,
         technical_score: float,
         fund_score: float,
+        volatility_score: float,
         sentiment_score: float,
     ) -> float:
         """
@@ -178,12 +194,13 @@ class SignalFusionEngine:
             news_score: 新闻得分
             technical_score: 技术面得分
             fund_score: 资金面得分
+            volatility_score: 波动率得分
             sentiment_score: 情绪得分
 
         Returns:
             置信度 [0, 1]
         """
-        scores = [news_score, technical_score, fund_score, sentiment_score]
+        scores = [news_score, technical_score, fund_score, volatility_score, sentiment_score]
 
         # 计算标准差（标准差越小，一致性越高）
         mean = sum(scores) / len(scores)
@@ -210,7 +227,9 @@ class SignalFusionEngine:
                 - news_score: 新闻得分
                 - technical_score: 技术面得分
                 - fund_score: 资金面得分
+                - volatility_score: 波动率得分
                 - sentiment_score: 情绪得分
+                - current_price: 当前价格
 
         Returns:
             融合结果列表
@@ -223,7 +242,9 @@ class SignalFusionEngine:
                 news_score=data.get("news_score", 0),
                 technical_score=data.get("technical_score", 0),
                 fund_score=data.get("fund_score", 0),
+                volatility_score=data.get("volatility_score", 0),
                 sentiment_score=data.get("sentiment_score", 0),
+                current_price=data.get("current_price", 0),
             )
             results.append(result)
 

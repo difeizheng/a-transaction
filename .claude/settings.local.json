@@ -9,7 +9,32 @@
       "Bash(python -c \":*)",
       "Bash(python main.py)",
       "Bash(streamlit run:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(python -c \"from src.analyzers.volatility_analyzer import VolatilityAnalyzer; from src.engine.signal_fusion import SignalFusionEngine; print\\(''Import test passed''\\)\")",
+      "Bash(python -c \"from src.engine.backtest import BacktestEngine, Trade, evaluate_system; print\\(''Backtest module import passed''\\)\")",
+      "Bash(python -c \"from src.engine.backtest import BacktestEngine, BacktestResult, Trade, evaluate_system; from src.engine.decision_engine import DecisionEngine; print\\(''All imports passed''\\)\")",
+      "Bash(python backtest_runner.py)",
+      "Bash(python backtest_improved.py)",
+      "Bash(python -c \"from src.strategy.improved_strategy import ImprovedStrategy; from main import AStockMonitor; print\\(''Import test passed''\\)\")",
+      "Bash(python -c \"import streamlit; from web_dashboard import improved_strategy; print\\(''Web dashboard import test passed''\\)\")",
+      "Bash(python -c \"import streamlit; print\\(''Import test passed''\\)\")",
+      "Bash(python -m py_compile web_dashboard.py)",
+      "Bash(Get-Process -Name streamlit -ErrorAction SilentlyContinue)",
+      "Bash(Stop-Process -Force)",
+      "Bash(taskkill /F /IM streamlit.exe)",
+      "Bash(pkill -f streamlit)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :8701)",
+      "Bash(taskkill:*)",
+      "Bash(python:*)",
+      "Bash(tasklist)",
+      "Bash(findstr \"python\")",
+      "Bash(Get-Process streamlit:*)",
+      "Bash(git commit:*)",
+      "Bash(git tag:*)",
+      "Bash(git push:*)",
+      "WebSearch",
+      "Bash(git reset:*)"
     ]
   }
 }

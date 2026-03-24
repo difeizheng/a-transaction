@@ -141,7 +141,8 @@ class NotificationManager:
         table.add_row("时间", msg.timestamp.strftime("%Y-%m-%d %H:%M:%S"))
 
         # 面板标题
-        title = f"🚀 交易信号 - {msg.stock_name}({msg.stock_code})"
+        signal_icon = "[BUY]" if msg.signal_type == "buy" else "[SELL]" if msg.signal_type == "sell" else "[HOLD]"
+        title = f"{signal_icon} 交易信号 - {msg.stock_name}({msg.stock_code})"
 
         console.print(Panel(table, title=title, border_style=color))
 
@@ -167,7 +168,8 @@ class NotificationManager:
             }
             color = color_map.get(msg.signal_type, "info")
 
-            markdown_content = f"""### 🚀 交易信号通知
+            signal_icon = "[买入]" if msg.signal_type == "buy" else "[卖出]" if msg.signal_type == "sell" else "[持有]"
+            markdown_content = f"""### {signal_icon} 交易信号通知
 
 **股票**: {msg.stock_name}({msg.stock_code})
 **信号类型**: {msg.signal_type.upper()}

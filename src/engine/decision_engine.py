@@ -2,8 +2,9 @@
 决策引擎 - 交易决策生成
 """
 from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
+import numpy as np
 
 from src.utils.logger import get_logger
 
@@ -69,6 +70,7 @@ class DecisionEngine:
         # 当前状态
         self.available_cash = initial_capital
         self.positions: Dict[str, Dict] = {}  # 持仓
+        self.trade_history: List[Dict] = field(default_factory=list)  # 交易历史
 
     def generate_decision(
         self,
@@ -323,6 +325,7 @@ class DecisionEngine:
         action: str,
         quantity: int,
         price: float,
+        timestamp: Optional[datetime] = None,
     ):
         """
         更新持仓信息
@@ -333,6 +336,7 @@ class DecisionEngine:
             action: 操作 (buy/sell)
             quantity: 数量
             price: 价格
+            timestamp: 时间戳
         """
         if action == "buy":
             if stock_code in self.positions:
@@ -345,6 +349,7 @@ class DecisionEngine:
                     "stock_name": stock_name,
                     "quantity": quantity,
                     "avg_cost": price,
+                    "entry_time": timestamp or datetime.now(),
                 }
 
             self.available_cash -= price * quantity
@@ -353,11 +358,57 @@ class DecisionEngine:
             if stock_code in self.positions:
                 pos = self.positions[stock_code]
                 sell_qty = min(quantity, pos["quantity"])
+
+                # 记录交易历史
+                trade_record = {
+                    "stock_code": stock_code,
+                    "stock_name": pos.get("stock_name", stock_name),
+                    "entry_price": pos["avg_cost"],
+                    "exit_price": price,
+                    "quantity": sell_qty,
+                    "entry_time": pos.get("entry_time"),
+                    "exit_time": timestamp or datetime.now(),
+                    "pnl": (price - pos["avg_cost"]) * sell_qty,
+                    "pnl_pct": (price - pos["avg_cost"]) / pos["avg_cost"],
+                }
+                self.trade_history.append(trade_record)
+
                 pos["quantity"] -= sell_qty
                 self.available_cash += price * sell_qty
 
                 if pos["quantity"] <= 0:
                     del self.positions[stock_code]
+
+    def get_trade_history(self) -> List[Dict]:
+        """获取交易历史"""
+        return self.trade_history
+
+    def get_performance_summary(self) -> Dict:
+        """获取绩效摘要"""
+        if not self.trade_history:
+            return {
+                "total_trades": 0,
+                "winning_trades": 0,
+                "losing_trades": 0,
+                "win_rate": 0.0,
+                "total_pnl": 0.0,
+                "avg_pnl": 0.0,
+            }
+
+        winning = [t for t in self.trade_history if t["pnl"] > 0]
+        losing = [t for t in self.trade_history if t["pnl"] <= 0]
+        total_pnl = sum(t["pnl"] for t in self.trade_history)
+
+        return {
+            "total_trades": len(self.trade_history),
+            "winning_trades": len(winning),
+            "losing_trades": len(losing),
+            "win_rate": round(len(winning) / len(self.trade_history), 4) if self.trade_history else 0,
+            "total_pnl": round(total_pnl, 2),
+            "avg_pnl": round(total_pnl / len(self.trade_history), 2),
+            "avg_win": round(np.mean([t["pnl"] for t in winning]), 2) if winning else 0,
+            "avg_loss": round(np.mean([t["pnl"] for t in losing]), 2) if losing else 0,
+        }
 
     def get_portfolio_summary(self) -> Dict:
         """获取投资组合摘要"""
