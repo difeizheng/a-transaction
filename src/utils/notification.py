@@ -2,6 +2,11 @@
 通知模块 - 消息推送管理
 """
 import json
+import hmac
+import hashlib
+import base64
+import time
+import urllib.parse
 import requests
 from typing import Dict, List, Optional
 from dataclasses import dataclass
@@ -36,6 +41,8 @@ class NotificationManager:
         self,
         wechat_webhook: str = "",
         dingtalk_webhook: str = "",
+        dingtalk_secret: str = "",
+        hook_url: str = "",
         console_output: bool = True,
     ):
         """
@@ -44,10 +51,14 @@ class NotificationManager:
         Args:
             wechat_webhook: 微信机器人 Webhook URL
             dingtalk_webhook: 钉钉机器人 Webhook URL
+            dingtalk_secret: 钉钉机器人签名 secret
+            hook_url: 通用 Webhook URL
             console_output: 是否输出到控制台
         """
         self.wechat_webhook = wechat_webhook
         self.dingtalk_webhook = dingtalk_webhook
+        self.dingtalk_secret = dingtalk_secret
+        self.hook_url = hook_url
         self.console_output = console_output
         self._message_queue: List[SignalMessage] = []
 
@@ -97,6 +108,8 @@ class NotificationManager:
             success &= self._send_wechat(msg)
         if self.dingtalk_webhook:
             success &= self._send_dingtalk(msg)
+        if self.hook_url:
+            success &= self._send_hook(msg)
 
         return success
 
@@ -197,7 +210,7 @@ class NotificationManager:
 
     def _send_dingtalk(self, msg: SignalMessage) -> bool:
         """
-        发送钉钉通知
+        发送钉钉通知（支持签名）
 
         Args:
             msg: 信号消息
@@ -209,24 +222,42 @@ class NotificationManager:
             return False
 
         try:
-            # 根据信号类型选择颜色
-            color_map = {
-                "buy": "008800",
-                "sell": "DD0000",
-                "hold": "FF8800",
+            # 生成签名
+            timestamp = str(round(time.time() * 1000))
+            secret = self.dingtalk_secret or ""
+
+            if secret:
+                # 使用 HMAC-SHA256 生成签名
+                secret_enc = secret.encode('utf-8')
+                string_to_sign = f'{timestamp}\n{secret}'
+                string_to_sign_enc = string_to_sign.encode('utf-8')
+                hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
+                sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
+
+                # 拼接带签名的 URL
+                webhook_url = f"{self.dingtalk_webhook}&timestamp={timestamp}&sign={sign}"
+            else:
+                # 无签名模式
+                webhook_url = self.dingtalk_webhook
+
+            # 根据信号类型选择图标
+            icon_map = {
+                "buy": "🟦",
+                "sell": "🟥",
+                "hold": "⚪",
             }
-            color = color_map.get(msg.signal_type, "008800")
+            icon = icon_map.get(msg.signal_type, "⚪")
 
-            markdown_content = f"""### 🚀 交易信号通知
+            markdown_content = f"""#### {icon} 交易信号 - {msg.stock_name}({msg.stock_code})
 
-- **股票**: {msg.stock_name}({msg.stock_code})
-- **信号类型**: {msg.signal_type.upper()}
-- **信号得分**: {msg.signal_score:.2f}
-- **决策结果**: {msg.decision}
-- **当前价格**: {msg.price:.2f} 元
-- **信号原因**: {msg.reason}
-- **时间**: {msg.timestamp.strftime('%Y-%m-%d %H:%M:%S')}
-"""
+| 项目 | 详情 |
+|------|------|
+| 信号类型 | {msg.signal_type.upper()} |
+| 决策结果 | {msg.decision} |
+| 信号得分 | {msg.signal_score:.2f} |
+| 当前价格 | {msg.price:.2f} 元 |
+| 信号原因 | {msg.reason} |
+| 时间 | {msg.timestamp.strftime('%Y-%m-%d %H:%M:%S')} |"""
 
             payload = {
                 "msgtype": "markdown",
@@ -237,7 +268,7 @@ class NotificationManager:
             }
 
             response = requests.post(
-                self.dingtalk_webhook,
+                webhook_url,
                 data=json.dumps(payload),
                 headers={"Content-Type": "application/json"},
                 timeout=10
@@ -259,83 +290,237 @@ class NotificationManager:
             logger.error(f"发送钉钉通知失败：{e}")
             return False
 
+    def _send_hook(self, msg: SignalMessage) -> bool:
+        """
+        发送通用 hook 通知
+
+        Args:
+            msg: 信号消息
+
+        Returns:
+            是否发送成功
+        """
+        if not self.hook_url:
+            return False
+
+        try:
+            payload = {
+                "event": "trading_signal",
+                "stock_code": msg.stock_code,
+                "stock_name": msg.stock_name,
+                "signal_type": msg.signal_type,
+                "signal_score": msg.signal_score,
+                "decision": msg.decision,
+                "price": msg.price,
+                "reason": msg.reason,
+                "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            }
+
+            response = requests.post(
+                self.hook_url,
+                data=json.dumps(payload),
+                headers={"Content-Type": "application/json"},
+                timeout=10
+            )
+
+            if response.status_code == 200:
+                logger.info(f"Hook 通知发送成功：{msg.stock_code}")
+                return True
+            else:
+                logger.warning(f"Hook 通知 HTTP 错误：{response.status_code}")
+                return False
+
+        except Exception as e:
+            logger.error(f"发送 Hook 通知失败：{e}")
+            return False
+
     def send_market_summary(
         self,
         total_stocks: int,
         bullish_count: int,
         bearish_count: int,
         neutral_count: int,
-        top_signals: List[SignalMessage] = None,
+        top_signals: List[Dict] = None,
+        positions: List[Dict] = None,
+        exits: List[Dict] = None,
     ) -> bool:
         """
-        发送市场_summary
+        发送市场监控摘要
 
         Args:
             total_stocks: 监控股票总数
             bullish_count: 看多数量
             bearish_count: 看空数量
             neutral_count: 中性数量
-            top_signals: 重要信号列表
+            top_signals: 重要信号列表 (字典格式)
+            positions: 新建持仓列表
+            exits: 退出持仓列表
 
         Returns:
             是否发送成功
         """
-        if not self.console_output and not self.wechat_webhook and not self.dingtalk_webhook:
-            return True
-
-        from rich.console import Console
-        from rich.table import Table
-
-        console = Console()
-
-        # 控制台输出
-        if self.console_output:
-            table = Table(title="📊 市场监控摘要")
-            table.add_column("指标", style="cyan")
-            table.add_column("数值", style="white")
-
-            table.add_row("监控股票总数", str(total_stocks))
-            table.add_row("看多信号", f"[green]{bullish_count}[/green]")
-            table.add_row("看空信号", f"[red]{bearish_count}[/red]")
-            table.add_row("中性信号", str(neutral_count))
-
-            console.print(table)
-
-            if top_signals:
-                console.print("\n[bold]重要信号:[/bold]")
-                for sig in top_signals[:5]:
-                    console.print(
-                        f"  {sig.stock_name}({sig.stock_code}): "
-                        f"[green]{sig.decision}[/green] ({sig.signal_score:.2f})"
-                    )
-
         # 发送 Webhook
         success = True
-        markdown_text = f"""### 📊 市场监控摘要
 
-**监控股票总数**: {total_stocks}
-**看多信号**: {bullish_count}
-**看空信号**: {bearish_count}
-**中性信号**: {neutral_count}
-**时间**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-"""
+        # 构建摘要内容
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        if top_signals:
-            markdown_text += "\n**重要信号**:\n"
-            for sig in top_signals[:5]:
-                markdown_text += f"- {sig.stock_name}({sig.stock_code}): {sig.decision} ({sig.signal_score:.2f})\n"
-
-        payload = {
-            "msgtype": "markdown",
-            "markdown": {"content": markdown_text}
+        # 通用 webhook payload
+        hook_payload = {
+            "event": "monitor_summary",
+            "timestamp": timestamp,
+            "summary": {
+                "total_stocks": total_stocks,
+                "bullish_count": bullish_count,
+                "bearish_count": bearish_count,
+                "neutral_count": neutral_count,
+            },
+            "signals": top_signals or [],
+            "new_positions": positions or [],
+            "exits": exits or [],
         }
 
+        # 发送到通用 webhook
+        if self.hook_url:
+            try:
+                response = requests.post(
+                    self.hook_url,
+                    data=json.dumps(hook_payload),
+                    headers={"Content-Type": "application/json"},
+                    timeout=10
+                )
+                if response.status_code == 200:
+                    logger.info("监控摘要发送到 Hook 成功")
+                else:
+                    logger.warning(f"Hook 通知 HTTP 错误：{response.status_code}")
+                    success = False
+            except Exception as e:
+                logger.error(f"发送监控摘要到 Hook 失败：{e}")
+                success = False
+
+        # === 构建易读的摘要内容（钉钉 Markdown 优化版）===
+        # 信号类型映射
+        signal_names = {
+            "buy": "买入",
+            "strong_buy": "强烈买入",
+            "sell": "卖出",
+            "strong_sell": "强烈卖出",
+        }
+
+        # 钉钉 Markdown 支持有限，使用纯文本 + 简单标记
+        # 注意：钉钉会将 emoji 转为彩色图标，这里保留常用 emoji
+        summary_lines = []
+        summary_lines.append(f"#### A 股监控摘要 - {timestamp}")
+        summary_lines.append("")
+        summary_lines.append(f"**扫描股票**: {total_stocks} 只")
+        summary_lines.append(f"> 买入：{bullish_count} 只 | 卖出：{bearish_count} 只 | 观望：{neutral_count} 只")
+
+        # 添加重要信号（使用列表格式）
+        if top_signals:
+            summary_lines.append("")
+            summary_lines.append("**重要信号**:")
+            for sig in top_signals[:5]:
+                sig_type = sig.get("signal", "")
+                code = sig.get("stock_code", "")
+                name = sig.get("stock_name", "") or ""
+                buy_score = sig.get("buy_score", 0)
+
+                # 信号图标 - 使用钉钉支持的 emoji
+                if sig_type in ["strong_buy"]:
+                    icon = "🟢"
+                elif sig_type in ["buy"]:
+                    icon = "🟦"
+                elif sig_type in ["strong_sell"]:
+                    icon = "🔴"
+                elif sig_type in ["sell"]:
+                    icon = "🟥"
+                else:
+                    icon = "⚪"
+
+                summary_lines.append(f"- {icon} **{name}({code})**: {signal_names.get(sig_type, sig_type)} (评分:{buy_score:.2f})")
+
+        # 添加新建持仓
+        if positions:
+            summary_lines.append("")
+            summary_lines.append("**新建持仓**:")
+            for pos in positions:
+                name = pos.get("stock_name", "") or ""
+                code = pos.get("stock_code", "")
+                price = pos.get("price", 0)
+                stop = pos.get("stop_price", 0)
+                target = pos.get("take_profit", 0)
+
+                summary_lines.append(f"- 🟢 **{name}({code})**")
+                summary_lines.append(f"  - 入场：{price:.2f} | 止损：{stop:.2f} | 止盈：{target:.2f}")
+
+        # 添加退出持仓
+        if exits:
+            summary_lines.append("")
+            summary_lines.append("**退出持仓**:")
+            for exit_pos in exits:
+                code = exit_pos.get("stock_code", "")
+                reason = exit_pos.get("reason", "")
+                price = exit_pos.get("exit_price", 0)
+
+                reason_text = "止损" if "止损" in reason else "止盈" if "止盈" in reason else reason
+                summary_lines.append(f"- ❌ **{code}**: {reason_text} ({price:.2f})")
+
+        # 底部署名
+        summary_lines.append("")
+        summary_lines.append("---")
+        summary_lines.append(f"*发送时间：{timestamp}*")
+
+        markdown_text = "\n".join(summary_lines)
+
+        # 钉钉通知（带签名）
+        if self.dingtalk_webhook:
+            try:
+                timestamp_ms = str(round(time.time() * 1000))
+                if self.dingtalk_secret:
+                    secret_enc = self.dingtalk_secret.encode('utf-8')
+                    string_to_sign = f'{timestamp_ms}\n{self.dingtalk_secret}'
+                    string_to_sign_enc = string_to_sign.encode('utf-8')
+                    hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
+                    sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
+                    webhook_url = f"{self.dingtalk_webhook}&timestamp={timestamp_ms}&sign={sign}"
+                else:
+                    webhook_url = self.dingtalk_webhook
+
+                payload = {
+                    "msgtype": "markdown",
+                    "markdown": {
+                        "title": "A 股监控摘要",
+                        "text": markdown_text
+                    }
+                }
+
+                resp = requests.post(webhook_url, json=payload, timeout=10)
+                if resp.status_code == 200 and resp.json().get("errcode") == 0:
+                    logger.info("监控摘要发送到钉钉成功")
+                else:
+                    logger.warning(f"钉钉发送失败：{resp.json()}")
+                    success = False
+            except Exception as e:
+                logger.error(f"发送监控摘要到钉钉失败：{e}")
+                success = False
+
+        # 微信通知
         if self.wechat_webhook:
             try:
+                payload = {
+                    "msgtype": "markdown",
+                    "markdown": {
+                        "content": markdown_text
+                    }
+                }
                 resp = requests.post(self.wechat_webhook, json=payload, timeout=10)
-                success &= (resp.status_code == 200)
+                if resp.status_code == 200 and resp.json().get("errcode") == 0:
+                    logger.info("监控摘要发送到微信成功")
+                else:
+                    logger.warning(f"微信发送失败：{resp.json()}")
+                    success = False
             except Exception as e:
-                logger.error(f"发送市场摘要到微信失败：{e}")
+                logger.error(f"发送监控摘要到微信失败：{e}")
                 success = False
 
         return success

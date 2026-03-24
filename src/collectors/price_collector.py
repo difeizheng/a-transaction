@@ -474,6 +474,43 @@ class PriceCollector:
             logger.error(f"获取股票列表失败：{e}")
             return []
 
+    def get_stock_info(self, stock_code: str) -> Optional[Dict]:
+        """
+        获取单只股票基本信息
+
+        Args:
+            stock_code: 股票代码
+
+        Returns:
+            股票信息字典，包含 code, name 等字段
+        """
+        if self._akshare is None:
+            return None
+
+        try:
+            # 标准化股票代码
+            code = self._normalize_code(stock_code)
+
+            # 获取实时行情
+            df = self._akshare.stock_zh_a_spot_em()
+
+            if df is not None and not df.empty:
+                stock_data = df[df["代码"] == code]
+                if not stock_data.empty:
+                    row = stock_data.iloc[0]
+                    return {
+                        "code": code,
+                        "name": row.get("名称", ""),
+                        "latest_price": float(row.get("最新价", 0)),
+                        "change_pct": float(row.get("涨跌幅", 0)),
+                    }
+            logger.warning(f"未找到股票 {code} 的信息")
+            return None
+
+        except Exception as e:
+            logger.error(f"获取股票信息失败：{e}")
+            return None
+
     def get_hs300_stocks(self) -> List[Dict]:
         """
         获取沪深 300 成分股

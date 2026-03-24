@@ -32,6 +32,9 @@ from src.collectors.fund_collector import FundCollector
 from src.analyzers.sentiment_analyzer import SentimentAnalyzer
 from src.analyzers.technical_analyzer import TechnicalAnalyzer
 from src.analyzers.fund_analyzer import FundAnalyzer
+from src.analyzers.volatility_analyzer import VolatilityAnalyzer, DynamicStopLossManager
+
+from src.strategy.improved_strategy import ImprovedStrategy, StrategySignal
 
 from src.engine.signal_fusion import SignalFusionEngine
 from src.engine.decision_engine import DecisionEngine
@@ -72,11 +75,16 @@ class AStockMonitor:
         self.sentiment_analyzer = None
         self.technical_analyzer = None
         self.fund_analyzer = None
+        self.volatility_analyzer = None
+
+        # 策略
+        self.improved_strategy = None
 
         # 引擎
         self.signal_fusion = None
         self.decision_engine = None
         self.risk_manager = None
+        self.stop_loss_manager = None
 
         # 工具
         self.db = None
@@ -125,7 +133,19 @@ class AStockMonitor:
         self.sentiment_analyzer = SentimentAnalyzer(model=self.settings.news_weight > 0)
         self.technical_analyzer = TechnicalAnalyzer()
         self.fund_analyzer = FundAnalyzer()
+        self.volatility_analyzer = VolatilityAnalyzer()
         logger.info("分析器初始化成功")
+
+        # 7. 初始化改进策略
+        self.improved_strategy = ImprovedStrategy(
+            buy_threshold=0.5,
+            sell_threshold=0.4,
+            min_buy_conditions=3,
+            min_sell_conditions=2,
+            atr_multiplier=2.0,
+            profit_ratio=2.5,
+        )
+        logger.info("改进策略初始化成功")
 
         # 7. 初始化引擎
         self.signal_fusion = SignalFusionEngine(
@@ -155,12 +175,22 @@ class AStockMonitor:
             exclude_st=self.settings.exclude_st,
             exclude_kcb=self.settings.exclude_kcb,
         )
+
+        # 初始化动态止损管理器
+        self.stop_loss_manager = DynamicStopLossManager(
+            atr_multiplier=2.0,
+            min_stop_distance=0.03,
+            max_stop_distance=0.15,
+        )
+
         logger.info("决策引擎初始化成功")
 
         # 8. 初始化通知
         self.notification = NotificationManager(
             wechat_webhook=self.settings.wechat_webhook,
             dingtalk_webhook=self.settings.dingtalk_webhook,
+            dingtalk_secret=self.settings.dingtalk_secret,
+            hook_url=self.settings.hook_url,
             console_output=self.settings.console_output,
         )
         logger.info("通知管理器初始化成功")
@@ -182,9 +212,19 @@ class AStockMonitor:
         logger.info("正在加载股票池...")
 
         if self.settings.stock_pool_type == "custom":
-            # 自定义股票池
+            # 自定义股票池 - 获取股票名称
             codes = self.settings.custom_stock_codes
-            self.stock_pool = [{"code": code, "name": ""} for code in codes]
+            self.stock_pool = []
+            for code in codes:
+                try:
+                    # 获取股票信息
+                    stock_info = self.price_collector.get_stock_info(code)
+                    name = stock_info.get("name", "") if stock_info else ""
+                    self.stock_pool.append({"code": code, "name": name})
+                    logger.info(f"股票 {code}: {name}")
+                except Exception as e:
+                    logger.warning(f"获取股票 {code} 信息失败：{e}")
+                    self.stock_pool.append({"code": code, "name": ""})
         elif self.settings.stock_pool_type == "hs300":
             # 沪深 300
             stocks = self.price_collector.get_hs300_stocks()
@@ -225,33 +265,111 @@ class AStockMonitor:
                     logger.info("非交易时间，跳过监控")
                     return
 
-            # 1. 采集数据并分析
-            results = []
-
-            # 限制处理数量，避免耗时过长
+            # 1. 限制处理数量，避免耗时过长
             process_count = min(len(self.stock_pool), 20)  # 每次最多处理 20 只
             sample_stocks = self.stock_pool[:process_count]
 
+            # 2. 生成信号（使用改进策略）
+            results = []
             for stock in sample_stocks:
                 try:
-                    result = self._analyze_stock(stock)
-                    if result:
-                        results.append(result)
+                    # 使用改进策略生成信号
+                    kline_data = self.price_collector.get_kline(
+                        stock.get("code", ""), period="daily", limit=120
+                    )
+                    if kline_data.empty:
+                        continue
+
+                    signal = self.improved_strategy.generate_signal(
+                        df=kline_data,
+                        stock_code=stock.get("code", ""),
+                        stock_name=stock.get("name", ""),
+                    )
+
+                    if signal.signal != "hold":
+                        results.append({
+                            "stock_code": signal.stock_code,
+                            "stock_name": signal.stock_name,
+                            "signal": signal.signal,
+                            "price": signal.price,
+                            "tech_score": signal.tech_score,
+                            "buy_score": signal.buy_score,
+                            "sell_score": signal.sell_score,
+                            "rsi": signal.rsi,
+                            "atr": signal.atr,
+                            "stop_distance": signal.stop_distance,
+                            "take_profit_distance": signal.take_profit_distance,
+                        })
+
+                        # 执行买入
+                        if signal.signal in ["buy", "strong_buy"]:
+                            # 计算仓位
+                            position_ratio = 0.25 if signal.signal == "strong_buy" else 0.15
+                            quantity = int(self.settings.initial_capital * position_ratio / signal.price / 100) * 100
+                            if quantity > 0:
+                                self.improved_strategy.update_position(signal, quantity)
+
                 except Exception as e:
                     logger.error(f"分析股票 {stock.get('code')} 失败：{e}")
                     continue
 
-            # 2. 生成信号
-            if results:
-                fused_results = self.signal_fusion.fuse_batch(results)
+            # 3. 检查持仓退出条件
+            for stock in sample_stocks:
+                try:
+                    code = stock.get("code", "")
+                    kline_data = self.price_collector.get_kline(code, period="daily", limit=5)
+                    if kline_data.empty:
+                        continue
 
-                # 3. 生成决策并输出
-                self._output_signals(fused_results)
+                    current_price = float(kline_data["close"].iloc[-1])
+                    timestamp = datetime.now()
+
+                    # 更新跟踪止损并检查退出
+                    pos_info = self.improved_strategy.get_position_info(code)
+                    if pos_info:
+                        # 更新跟踪止损
+                        signal = self.improved_strategy.generate_signal(
+                            df=kline_data, stock_code=code, timestamp=timestamp
+                        )
+                        self.improved_strategy.update_trailing_stop(
+                            code, current_price, signal.stop_distance
+                        )
+
+                        # 检查退出条件
+                        exit_result = self.improved_strategy.check_exit(
+                            code, current_price, timestamp
+                        )
+                        if exit_result:
+                            position, exit_reason, exit_price = exit_result
+                            logger.info(f"{code}: 触发{exit_reason}，退出价={exit_price:.2f}")
+                            self.improved_strategy.remove_position(code)
+
+                except Exception as e:
+                    logger.error(f"检查持仓 {stock.get('code')} 失败：{e}")
+                    continue
+
+            # 4. 输出信号
+            if results:
+                self._output_improved_signals(results)
 
                 # 4. 发送通知
-                self._send_notifications(fused_results)
+                self._send_improved_notifications(results)
 
-            # 5. 记录运行时间
+            # 5. 统计信号
+            buy_count = sum(1 for r in results if r["signal"] in ["buy", "strong_buy"])
+            sell_count = sum(1 for r in results if r["signal"] in ["sell", "strong_sell"])
+            hold_count = len(results) - buy_count - sell_count
+
+            # 6. 发送监控汇总到 webhook
+            self._send_monitor_summary(
+                total_stocks=len(sample_stocks),
+                bullish_count=buy_count,
+                bearish_count=sell_count,
+                neutral_count=hold_count,
+                top_signals=results,
+            )
+
+            # 7. 记录运行时间
             self.last_run = datetime.now()
             elapsed = (self.last_run - start_time).total_seconds()
             logger.info(f"监控任务执行完成，耗时 {elapsed:.1f} 秒")
@@ -299,7 +417,12 @@ class AStockMonitor:
         else:
             news_score = 0.0
 
-        # 5. 市场情绪（简化为 0）
+        # 5. 波动率分析
+        vol_signal = self.volatility_analyzer.analyze(kline_data)
+        volatility_score = -vol_signal.atr_ratio * 10  # ATR 比率越低越好，转换为 [-1, 1] 得分
+        volatility_score = max(-1.0, min(1.0, volatility_score))
+
+        # 6. 市场情绪（简化为 0）
         sentiment_score = 0.0
 
         return {
@@ -308,31 +431,33 @@ class AStockMonitor:
             "news_score": news_score,
             "technical_score": technical_score,
             "fund_score": fund_score,
+            "volatility_score": volatility_score,
             "sentiment_score": sentiment_score,
             "current_price": float(kline_data["close"].iloc[-1]) if not kline_data.empty else 0,
+            "volatility_signal": vol_signal,
         }
 
-    def _output_signals(self, results):
-        """输出信号到终端"""
+    def _output_improved_signals(self, results):
+        """输出改进策略信号到终端"""
         if not self.settings.console_output:
             return
 
         # 创建信号表格
-        table = Table(title=f"[bold cyan]交易信号 - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}[/bold cyan]")
+        table = Table(title=f"[bold cyan]改进策略信号 - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}[/bold cyan]")
         table.add_column("代码", style="cyan")
         table.add_column("名称", style="white")
         table.add_column("信号", style="green")
-        table.add_column("得分", style="yellow")
-        table.add_column("新闻", style="blue")
-        table.add_column("技术", style="blue")
-        table.add_column("资金", style="blue")
-        table.add_column("置信度", style="magenta")
+        table.add_column("价格", style="yellow")
+        table.add_column("买分", style="blue")
+        table.add_column("卖分", style="blue")
+        table.add_column("RSI", style="blue")
+        table.add_column("止损%", style="red")
+        table.add_column("止盈%", style="green")
 
         # 信号颜色映射
         signal_colors = {
             "strong_buy": "green",
             "buy": "light_green",
-            "hold": "yellow",
             "sell": "red",
             "strong_sell": "bright_red",
         }
@@ -340,75 +465,127 @@ class AStockMonitor:
         signal_labels = {
             "strong_buy": "强烈买入",
             "buy": "买入",
-            "hold": "持有",
             "sell": "卖出",
             "strong_sell": "强烈卖出",
         }
 
-        # 只显示有明确信号的
+        # 显示所有非 hold 信号
         for r in results[:15]:
-            if r.signal in ["strong_buy", "buy", "sell", "strong_sell"]:
-                table.add_row(
-                    r.stock_code,
-                    r.stock_name or "",
-                    f"[{signal_colors.get(r.signal, 'white')}]{signal_labels.get(r.signal, r.signal)}[/{signal_colors.get(r.signal, 'white')}]",
-                    f"{r.total_score:.2f}",
-                    f"{r.news_score:.2f}",
-                    f"{r.technical_score:.2f}",
-                    f"{r.fund_score:.2f}",
-                    f"{r.confidence:.1%}",
-                )
+            table.add_row(
+                r["stock_code"],
+                r["stock_name"] or "",
+                f"[{signal_colors.get(r['signal'], 'white')}]{signal_labels.get(r['signal'], r['signal'])}[/{signal_colors.get(r['signal'], 'white')}]",
+                f"{r['price']:.2f}",
+                f"{r['buy_score']:.2f}",
+                f"{r['sell_score']:.2f}",
+                f"{r['rsi']:.0f}",
+                f"{r['stop_distance']:.1%}",
+                f"{r['take_profit_distance']:.1%}",
+            )
 
         console.print(table)
 
-        # 显示汇总
-        summary = self.signal_fusion.generate_summary(results)
-        summary_table = Table(title="[bold green]信号汇总[/bold green]")
-        summary_table.add_column("类型", style="cyan")
-        summary_table.add_column("数量", style="white")
-        summary_table.add_row("强烈买入", f"[green]{summary.get('strong_buy', 0)}[/green]")
-        summary_table.add_row("买入", f"[light_green]{summary.get('buy', 0)}[/light_green]")
-        summary_table.add_row("持有", f"[yellow]{summary.get('hold', 0)}[/yellow]")
-        summary_table.add_row("卖出", f"[red]{summary.get('sell', 0)}[/red]")
-        summary_table.add_row("强烈卖出", f"[bright_red]{summary.get('strong_sell', 0)}[/bright_red]")
-        summary_table.add_row("平均得分", f"{summary.get('avg_score', 0):.3f}")
+        # 显示持仓状态
+        positions = self.improved_strategy.get_all_positions()
+        if positions:
+            pos_table = Table(title="[bold yellow]当前持仓[/bold yellow]")
+            pos_table.add_column("代码", style="cyan")
+            pos_table.add_column("名称", style="white")
+            pos_table.add_column("成本", style="yellow")
+            pos_table.add_column("止损价", style="red")
+            pos_table.add_column("止盈价", style="green")
+            pos_table.add_column("最高价", style="magenta")
 
-        console.print(summary_table)
+            for pos in positions:
+                pos_table.add_row(
+                    pos["stock_code"],
+                    pos["stock_name"] or "",
+                    f"{pos['avg_cost']:.2f}",
+                    f"{pos['current_stop']:.2f}",
+                    f"{pos['take_profit']:.2f}",
+                    f"{pos['highest_price']:.2f}",
+                )
+            console.print(pos_table)
 
-    def _send_notifications(self, results):
-        """发送通知"""
+    def _send_improved_notifications(self, results):
+        """发送改进策略通知"""
         if not self.settings.notification_enabled:
             return
 
         # 筛选重要信号
         important_signals = [
             r for r in results
-            if r.signal in ["strong_buy", "strong_sell"] or abs(r.total_score) >= self.settings.signal_threshold
+            if r["signal"] in ["strong_buy", "strong_sell"]
         ]
 
         if not important_signals:
             return
 
         # 发送每个重要信号
-        for signal in important_signals[:5]:  # 最多发送 5 个
+        for signal in important_signals[:5]:
             self.notification.send_signal(
-                stock_code=signal.stock_code,
-                stock_name=signal.stock_name,
-                signal_type=signal.signal.split("_")[-1] if "_" in signal.signal else signal.signal,
-                signal_score=signal.total_score,
+                stock_code=signal["stock_code"],
+                stock_name=signal["stock_name"],
+                signal_type=signal["signal"].split("_")[-1] if "_" in signal["signal"] else signal["signal"],
+                signal_score=signal.get("buy_score", 0),
                 decision={
                     "strong_buy": "强烈买入",
                     "buy": "买入",
-                    "hold": "持有",
                     "sell": "卖出",
                     "strong_sell": "强烈卖出",
-                }.get(signal.signal, signal.signal),
-                price=signal.sentiment_score,  # 这里应该传入当前价格
-                reason=f"综合得分：{signal.total_score:.2f}, "
-                       f"新闻：{signal.news_score:.2f}, "
-                       f"技术：{signal.technical_score:.2f}, "
-                       f"资金：{signal.fund_score:.2f}",
+                }.get(signal["signal"], signal["signal"]),
+                price=signal["price"],
+                reason=f"买分={signal['buy_score']:.2f}, "
+                       f"卖分={signal['sell_score']:.2f}, "
+                       f"RSI={signal['rsi']:.0f}, "
+                       f"止损={signal['stop_distance']:.1%}, "
+                       f"止盈={signal['take_profit_distance']:.1%}",
             )
+
+    def _send_monitor_summary(
+        self,
+        total_stocks: int,
+        bullish_count: int,
+        bearish_count: int,
+        neutral_count: int,
+        top_signals: List[Dict],
+    ):
+        """
+        发送监控汇总到 webhook
+
+        Args:
+            total_stocks: 监控股票总数
+            bullish_count: 看多数量
+            bearish_count: 看空数量
+            neutral_count: 中性数量
+            top_signals: 重要信号列表
+        """
+        if not self.settings.notification_enabled:
+            return
+
+        # 检查是否配置了发送汇总
+        if not self.settings.send_summary:
+            logger.debug("监控汇总发送已禁用，跳过")
+            return
+
+        # 获取当前持仓
+        positions = self.improved_strategy.get_all_positions()
+
+        # 筛选重要信号（买入/卖出）
+        important_signals = [
+            r for r in top_signals
+            if r["signal"] in ["buy", "strong_buy", "sell", "strong_sell"]
+        ]
+
+        # 发送汇总
+        self.notification.send_market_summary(
+            total_stocks=total_stocks,
+            bullish_count=bullish_count,
+            bearish_count=bearish_count,
+            neutral_count=neutral_count,
+            top_signals=important_signals[:10],
+            positions=positions[:5],
+        )
 
     def start(self):
         """启动监控系统"""
