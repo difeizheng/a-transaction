@@ -37,17 +37,29 @@ risk:
   excluded_kcb: false
   excluded_st: true
   max_drawdown: 0.15
+  max_industry_exposure: 0.30
 sentiment:
   keyword_threshold: 0.6
   model: snownlp
   news_weight: 0.3
 stock_pool:
   custom_codes:
-  - '000001'
-  - '600000'
-  - '000002'
-  max_stocks: 10
+  - '000948'  # 南天信息
+  - '601360'  # 三六零
+  - '300459'  # 汤姆猫
+  - '002714'  # 牧原股份
+  - '600036'  # 招商银行
+  max_stocks: 5
   type: custom
+  # 选股配置（第二阶段优化）
+  selector:
+    enabled: false
+    min_market_cap: 50000000000
+    max_market_cap: 300000000000
+    min_daily_turnover: 100000000
+    min_roe: 0.05
+    max_pe: 50
+    max_pb: 10
 system:
   data_dir: data
   db_path: data/trading.db
@@ -67,9 +79,34 @@ technical:
   weight: 0.25
 trading:
   initial_capital: 20000
-  max_position_per_stock: 0.2
+  max_position_per_stock: 0.25
   max_sell_score: -0.6
   max_total_position: 0.95
   min_buy_score: 0.5
   stop_loss: 0.08
   take_profit: 0.2
+  # 增强止损配置（优化 1）
+  stop_loss_enhanced:
+    enabled: true
+    trailing_stop: true
+    trailing_threshold: 0.05
+    trailing_distance: 0.03
+    time_stop: true
+    time_stop_days: 5
+  # 网格策略配置（优化 2）
+  grid_strategy:
+    enabled: false
+    grid_num: 5
+    min_grid_profit: 0.02
+    max_grid_profit: 0.05
+    adx_threshold: 30
+  # 动态仓位配置（优化 4）
+  dynamic_position:
+    enabled: true
+    signal_based: true
+    regime_based: true
+    risk_adjustment: true
+live_compare:
+  enabled: true
+  data_dir: data/live_compare
+  auto_adjust: true

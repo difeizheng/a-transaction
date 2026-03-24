@@ -1,29 +1,12 @@
 """
-V4 稳健策略 - 针对 A 股实盘优化
+V4 深度优化策略回测 - 验证新股票池和深度优化策略
 
-核心理念：
-1. 少而精 - 减少交易频率，提高胜率
-2. 顺大势逆小势 - 趋势向上 + 回调买入
-3. 严格止损 - 快速止损，让利润奔跑
-4. 不追高 - 只在回调时买入
-
-买入条件（必须全部满足）：
-1. MA20 向上（中期趋势向上）
-2. MA60 向上（长期趋势向上）
-3. 价格在 MA20 之上（多头排列）
-4. 近 3-5 日回调 3%-8%（不追高）
-5. RSI 35-55（未超买，有上升空间）
-6. 成交量萎缩（回调缩量）
-
-卖出条件（满足任一即卖出）：
-1. 跌破 MA20（趋势破坏）
-2. 止损 -8%
-3. 止盈 +20%
-4. 持仓超过 8 天无盈利
-
-仓位管理：
-- 单只股票最高 25% 仓位
-- 总仓位不超过 75%
+股票池：
+- 000948 南天信息
+- 601360 三六零
+- 300459 汤姆猫
+- 002714 牧原股份
+- 600036 招商银行
 """
 import sys
 from pathlib import Path
@@ -32,196 +15,29 @@ from datetime import datetime, timedelta
 sys.path.insert(0, str(Path(__file__).parent))
 
 from src.collectors.price_collector import PriceCollector
-from src.analyzers.technical_analyzer import TechnicalAnalyzer
-from src.analyzers.volatility_analyzer import VolatilityAnalyzer
+from src.strategy.v4_strategy import V4Strategy
+from src.engine.backtest import Trade, BacktestResult
 import pandas as pd
 import numpy as np
 
 
-class V4Strategy:
-    """V4 稳健策略"""
-
-    def __init__(self):
-        self.technical_analyzer = TechnicalAnalyzer()
-        self.volatility_analyzer = VolatilityAnalyzer()
-
-        # 策略参数
-        self.max_position_ratio = 0.25  # 单只股票最高 25%
-        self.total_position_ratio = 0.75  # 总仓位 75%
-        self.stop_loss = 0.08  # 止损 8%
-        self.take_profit = 0.20  # 止盈 20%
-        self.time_stop_days = 8  # 时间止损 8 天
-
-        # 持仓
-        self.positions = {}
-
-    def generate_signals(self, df: pd.DataFrame, stock_code: str, stock_name: str = "") -> list:
-        """
-        生成 V4 策略信号
-
-        买入条件（必须全部满足）：
-        1. MA20 向上
-        2. MA60 向上
-        3. 价格在 MA20 之上
-        4. 近 3-5 日回调 3%-8%
-        5. RSI 35-55
-        6. 成交量萎缩
-        """
-        signals = []
-        if len(df) < 65:  # 需要至少 65 天数据
-            return signals
-
-        # 计算指标
-        ma5 = df['close'].rolling(5).mean()
-        ma10 = df['close'].rolling(10).mean()
-        ma20 = df['close'].rolling(20).mean()
-        ma60 = df['close'].rolling(60).mean()
-
-        # MACD
-        exp1 = df['close'].ewm(span=12, adjust=False).mean()
-        exp2 = df['close'].ewm(span=26, adjust=False).mean()
-        macd_dif = exp1 - exp2
-
-        # RSI
-        delta = df['close'].diff()
-        gain = delta.where(delta > 0, 0).rolling(14).mean()
-        loss = -delta.where(delta < 0, 0).rolling(14).mean()
-        rs = gain / loss
-        rsi = 100 - (100 / (1 + rs))
-
-        for i in range(60, len(df)):
-            current_price = float(df.iloc[i]['close'])
-
-            # 获取指标值
-            curr_ma20 = float(ma20.iloc[i])
-            curr_ma60 = float(ma60.iloc[i])
-            prev_ma20_5 = float(ma20.iloc[i-5])
-            prev_ma60_5 = float(ma60.iloc[i-5])
-
-            # 5 日前价格
-            price_5d_ago = float(df.iloc[i-5]['close'])
-            price_3d_ago = float(df.iloc[i-3]['close'])
-
-            # RSI
-            curr_rsi = float(rsi.iloc[i]) if not np.isnan(rsi.iloc[i]) else 50
-
-            # 成交量
-            avg_volume_10 = df['volume'].iloc[i-10:i].mean()
-            curr_volume = df['volume'].iloc[i]
-            volume_ratio = curr_volume / avg_volume_10 if avg_volume_10 > 0 else 1
-
-            # === 买入条件检查 ===
-            conditions_met = 0
-            buy_details = {}
-
-            # 1. MA20 向上
-            if curr_ma20 > prev_ma20_5:
-                conditions_met += 1
-                buy_details['ma20_up'] = True
-
-            # 2. MA60 向上
-            if curr_ma60 > prev_ma60_5:
-                conditions_met += 1
-                buy_details['ma60_up'] = True
-
-            # 3. 价格在 MA20 之上
-            if current_price > curr_ma20:
-                conditions_met += 1
-                buy_details['above_ma20'] = True
-
-            # 4. 近 3-5 日回调 3%-8%
-            pullback_5d = (price_5d_ago - current_price) / price_5d_ago
-            pullback_3d = (price_3d_ago - current_price) / price_3d_ago
-            if 0.03 <= pullback_5d <= 0.12 or 0.02 <= pullback_3d <= 0.08:
-                conditions_met += 1
-                buy_details['pullback'] = True
-                buy_details['pullback_pct'] = pullback_5d
-
-            # 5. RSI 35-55
-            if 35 <= curr_rsi <= 55:
-                conditions_met += 1
-                buy_details['rsi_ok'] = True
-
-            # 6. 成交量萎缩（回调缩量）
-            if volume_ratio < 1.0:
-                conditions_met += 1
-                buy_details['volume_down'] = True
-
-            # 判断信号
-            if conditions_met == 6:
-                signal_type = "strong_buy"
-            elif conditions_met >= 4:
-                signal_type = "buy"
-            else:
-                signal_type = "hold"
-
-            # === 卖出条件检查 ===
-            sell_conditions = 0
-            sell_details = {}
-
-            # 1. 跌破 MA20
-            if current_price < curr_ma20 * 0.98:  # 允许 2% 的误差
-                sell_conditions += 1
-                sell_details['below_ma20'] = True
-
-            # 2. MA20 向下
-            if curr_ma20 < prev_ma20_5:
-                sell_conditions += 1
-                sell_details['ma20_down'] = True
-
-            # 3. RSI 超买
-            if curr_rsi > 70:
-                sell_conditions += 1
-                sell_details['rsi_overbought'] = True
-
-            if sell_conditions >= 2:
-                signal_type = "sell"
-            elif sell_conditions >= 3:
-                signal_type = "strong_sell"
-
-            # 获取日期
-            trade_date = df.iloc[i].get("trade_date", str(i))
-            if isinstance(trade_date, str):
-                try:
-                    trade_date = datetime.strptime(trade_date, "%Y%m%d")
-                except:
-                    trade_date = datetime(2024, 1, 1) + timedelta(days=i)
-
-            # 计算 ATR 止损
-            subset = df.iloc[:i+1].copy()
-            atr = self.volatility_analyzer.calculate_atr(subset)
-            curr_atr = float(atr.iloc[i]) if not np.isnan(atr.iloc[i]) else 0
-
-            if curr_atr > 0:
-                stop_distance = max(self.stop_loss, (curr_atr * 2) / current_price)
-                stop_distance = min(stop_distance, 0.12)
-            else:
-                stop_distance = self.stop_loss
-
-            signals.append({
-                "stock_code": stock_code,
-                "stock_name": stock_name,
-                "signal": signal_type,
-                "timestamp": trade_date,
-                "price": current_price,
-                "stop_distance": stop_distance,
-                "take_profit_distance": self.take_profit,
-                "rsi": curr_rsi,
-                "conditions_met": conditions_met,
-                "buy_details": buy_details,
-                "sell_details": sell_details,
-            })
-
-        return signals
+STOCK_CODES = ["000948", "601360", "300459", "002714", "600036"]
+STOCK_NAMES = {
+    "000948": "南天信息",
+    "601360": "三六零",
+    "300459": "汤姆猫",
+    "002714": "牧原股份",
+    "600036": "招商银行",
+}
 
 
 def run_v4_backtest():
-    """运行 V4 回测"""
-    print("=" * 70)
-    print("V4 稳健策略回测")
-    print("=" * 70)
+    """运行 V4 深度优化策略回测"""
+    print("=" * 60)
+    print("V4 深度优化策略回测 - 新股票池验证")
+    print("=" * 60)
 
-    STOCK_CODES = ["000001", "600000", "000002"]
+    # 配置
     INITIAL_CAPITAL = 100000
     DAYS = 120
 
@@ -229,17 +45,17 @@ def run_v4_backtest():
     strategy = V4Strategy()
 
     print(f"\n初始资金：{INITIAL_CAPITAL:,.2f} 元")
-    print(f"回测股票：{STOCK_CODES}")
+    print(f"股票池：{STOCK_CODES}")
     print(f"数据周期：{DAYS} 天")
-    print("-" * 70)
+    print("-" * 60)
 
-    # 获取数据
+    # 获取数据并生成信号
     price_data = {}
     all_signals = []
 
     for code in STOCK_CODES:
         try:
-            df = collector.get_kline(code, period="daily", limit=max(DAYS, 120))
+            df = collector.get_kline(code, period="daily", limit=DAYS)
             if df is None or df.empty:
                 print(f"[ERR] {code}: 无法获取数据")
                 continue
@@ -247,66 +63,69 @@ def run_v4_backtest():
             price_data[code] = df
             print(f"[OK] {code}: 获取到 {len(df)} 条数据")
 
-            # 生成信号
+            # 使用 V4 策略生成信号
             signals = strategy.generate_signals(df, code)
             all_signals.extend(signals)
 
         except Exception as e:
             print(f"[ERR] {code}: 错误 - {e}")
 
-    if not all_signals:
-        print("\n[ERR] 没有生成任何信号")
-        return
-
     # 信号统计
     signal_types = {}
     for s in all_signals:
-        sig = s["signal"]
+        sig = s.get("signal", "hold")
         signal_types[sig] = signal_types.get(sig, 0) + 1
 
     print(f"\n生成信号总数：{len(all_signals)}")
     print("信号类型统计:")
     for sig, count in sorted(signal_types.items()):
         print(f"  {sig}: {count}")
-    print("-" * 70)
+    print("-" * 60)
+
+    if not all_signals:
+        print("[ERR] 没有生成任何信号")
+        return
 
     # 运行回测
-    result = execute_trades(price_data, all_signals, INITIAL_CAPITAL, strategy)
+    result = run_v4_backtest_execution(price_data, all_signals, INITIAL_CAPITAL, strategy)
 
     # 输出结果
-    print_result(result)
+    print_v4_result(result)
 
 
-def execute_trades(price_data, signals, initial_capital, strategy):
-    """执行交易"""
+def run_v4_backtest_execution(price_data, signals, initial_capital, strategy):
+    """V4 策略执行逻辑"""
+    from src.engine.backtest import Trade, BacktestResult
+
     capital = initial_capital
     positions = {}
     trades = []
     equity_curve = [capital]
 
+    # 按时间排序
     signals_sorted = sorted(signals, key=lambda x: x.get("timestamp", datetime.now()))
 
     for signal in signals_sorted:
         code = signal["stock_code"]
-        signal_type = signal["signal"]
-        timestamp = signal["timestamp"]
-        price = signal["price"]
-        stop_dist = signal.get("stop_distance", 0.08)
+        signal_type = signal.get("signal", "hold")
+        timestamp = signal.get("timestamp", datetime.now())
+        price = signal.get("price", 0)
 
-        if code not in price_data:
+        if code not in price_data or price <= 0:
             continue
 
         # === 买入执行 ===
-        if signal_type in ["buy", "strong_buy"] and code not in positions:
-            position_ratio = 0.25 if signal_type == "strong_buy" else 0.20
+        if signal_type in ["buy", "strong_buy", "weak_buy"] and code not in positions:
+            position_ratio = signal.get("position_ratio", 0.15)
             quantity = int(capital * position_ratio / price / 100) * 100
 
             if quantity > 0:
                 cost = quantity * price * 1.004
                 if cost <= capital:
                     capital -= cost
+                    stop_dist = signal.get("stop_distance", 0.08)
                     stop_price = price * (1 - stop_dist)
-                    take_profit = price * (1 + strategy.take_profit)
+                    take_profit = price * (1 + stop_dist * 2.5)
 
                     positions[code] = {
                         "quantity": quantity,
@@ -317,94 +136,133 @@ def execute_trades(price_data, signals, initial_capital, strategy):
                         "highest_price": price,
                     }
 
-        # === 检查持仓 ===
-        for pos_code, pos in list(positions.items()):
-            if pos_code not in price_data:
-                continue
+        # === 卖出执行 ===
+        elif signal_type == "sell" and code in positions:
+            pos = positions[code]
+            sale_value = pos["quantity"] * price * 0.996
+            capital += sale_value
 
-            df = price_data[pos_code]
-            current_price = float(df["close"].iloc[-1])
+            pnl = (price - pos["avg_cost"]) * pos["quantity"]
+            pnl_pct = (price - pos["avg_cost"]) / pos["avg_cost"]
 
-            # 更新最高价和止损
-            if current_price > pos["highest_price"]:
-                pos["highest_price"] = current_price
-                new_stop = current_price * (1 - 0.05)  # 跟踪止损 5%
-                if new_stop > pos["stop_price"]:
-                    pos["stop_price"] = new_stop
+            trades.append(Trade(
+                stock_code=code,
+                stock_name=STOCK_NAMES.get(code, ""),
+                entry_price=pos["avg_cost"],
+                exit_price=price,
+                quantity=pos["quantity"],
+                entry_time=pos["entry_time"],
+                exit_time=timestamp,
+                direction="long",
+                pnl=pnl,
+                pnl_pct=pnl_pct,
+                exit_reason="信号",
+            ))
 
-            # 计算持仓天数
-            holding_days = (timestamp - pos["entry_time"]).days
+            # 记录卖出时间（用于冷却期）
+            strategy.record_sell(code, timestamp)
+            del positions[code]
 
-            # 检查止损
-            exit_reason = None
-            exit_price = None
+        # === 持仓管理 ===
+        for code_held, pos in list(positions.items()):
+            if code_held in price_data:
+                if price > pos["highest_price"]:
+                    pos["highest_price"] = price
+                    stop_dist = signal.get("stop_distance", 0.08)
+                    new_stop = price * (1 - stop_dist)
+                    if new_stop > pos["stop_price"]:
+                        pos["stop_price"] = new_stop
 
-            if current_price <= pos["stop_price"]:
-                exit_reason = "止损"
-                exit_price = pos["stop_price"]
-            elif current_price >= pos["take_profit"]:
-                exit_reason = "止盈"
-                exit_price = pos["take_profit"]
-            elif holding_days >= strategy.time_stop_days:
-                profit_pct = (current_price - pos["avg_cost"]) / pos["avg_cost"]
-                if profit_pct < 0.05:
-                    exit_reason = "时间止损"
-                    exit_price = current_price
+                # 检查止损/止盈
+                if price <= pos["stop_price"]:
+                    sale_value = pos["quantity"] * pos["stop_price"] * 0.996
+                    capital += sale_value
+                    pnl = (pos["stop_price"] - pos["avg_cost"]) * pos["quantity"]
+                    pnl_pct = (pos["stop_price"] - pos["avg_cost"]) / pos["avg_cost"]
 
-            if exit_reason:
-                quantity = pos["quantity"]
-                if exit_reason == "止损":
-                    sale_value = quantity * exit_price * 0.996
-                else:
-                    sale_value = quantity * exit_price * 0.996
+                    trades.append(Trade(
+                        stock_code=code_held,
+                        stock_name=STOCK_NAMES.get(code_held, ""),
+                        entry_price=pos["avg_cost"],
+                        exit_price=pos["stop_price"],
+                        quantity=pos["quantity"],
+                        entry_time=pos["entry_time"],
+                        exit_time=timestamp,
+                        direction="long",
+                        pnl=pnl,
+                        pnl_pct=pnl_pct,
+                        exit_reason="动态止损",
+                    ))
+                    del positions[code_held]
 
-                pnl = (exit_price - pos["avg_cost"]) * quantity
-                pnl_pct = (exit_price - pos["avg_cost"]) / pos["avg_cost"]
+                elif price >= pos["take_profit"]:
+                    sale_value = pos["quantity"] * pos["take_profit"] * 0.996
+                    capital += sale_value
+                    pnl = (pos["take_profit"] - pos["avg_cost"]) * pos["quantity"]
+                    pnl_pct = (pos["take_profit"] - pos["avg_cost"]) / pos["avg_cost"]
 
-                trades.append({
-                    "stock_code": pos_code,
-                    "entry_price": pos["avg_cost"],
-                    "exit_price": exit_price,
-                    "pnl": pnl,
-                    "pnl_pct": pnl_pct,
-                    "exit_reason": exit_reason,
-                })
+                    trades.append(Trade(
+                        stock_code=code_held,
+                        stock_name=STOCK_NAMES.get(code_held, ""),
+                        entry_price=pos["avg_cost"],
+                        exit_price=pos["take_profit"],
+                        quantity=pos["quantity"],
+                        entry_time=pos["entry_time"],
+                        exit_time=timestamp,
+                        direction="long",
+                        pnl=pnl,
+                        pnl_pct=pnl_pct,
+                        exit_reason="止盈",
+                    ))
+                    del positions[code_held]
 
-                capital += sale_value
-                del positions[pos_code]
-
-        # 计算权益
+        # 更新资金曲线
         equity = capital
-        for pos_code, pos in positions.items():
-            if pos_code in price_data:
+        for code_held, pos in positions.items():
+            if code_held in price_data:
                 equity += pos["quantity"] * price
         equity_curve.append(equity)
 
-    # 平仓剩余持仓
+    # 强制平仓
     for code, pos in positions.items():
         if code in price_data:
             df = price_data[code]
             final_price = float(df["close"].iloc[-1])
             sale_value = pos["quantity"] * final_price * 0.996
+            capital += sale_value
             pnl = (final_price - pos["avg_cost"]) * pos["quantity"]
             pnl_pct = (final_price - pos["avg_cost"]) / pos["avg_cost"]
 
-            trades.append({
-                "stock_code": code,
-                "entry_price": pos["avg_cost"],
-                "exit_price": final_price,
-                "pnl": pnl,
-                "pnl_pct": pnl_pct,
-                "exit_reason": "平仓",
-            })
-            capital += sale_value
+            trades.append(Trade(
+                stock_code=code,
+                stock_name=STOCK_NAMES.get(code, ""),
+                entry_price=pos["avg_cost"],
+                exit_price=final_price,
+                quantity=pos["quantity"],
+                entry_time=pos["entry_time"],
+                exit_time=signals_sorted[-1]["timestamp"] if signals_sorted else datetime.now(),
+                direction="long",
+                pnl=pnl,
+                pnl_pct=pnl_pct,
+                exit_reason="平仓",
+            ))
+
+    final_capital = capital
 
     # 计算指标
-    winning = [t for t in trades if t["pnl"] > 0]
-    losing = [t for t in trades if t["pnl"] <= 0]
+    start_date = signals_sorted[0]["timestamp"] if signals_sorted else datetime.now()
+    end_date = signals_sorted[-1]["timestamp"] if signals_sorted else datetime.now()
+    days = max(1, (end_date - start_date).days)
+
+    total_return = (final_capital - initial_capital) / initial_capital
+    annual_return = (1 + total_return) ** (365 / days) - 1 if days > 0 else 0
+
+    winning = [t for t in trades if t.pnl > 0]
+    losing = [t for t in trades if t.pnl <= 0]
     win_rate = len(winning) / len(trades) if trades else 0
-    avg_win = np.mean([t["pnl_pct"] for t in winning]) if winning else 0
-    avg_loss = abs(np.mean([t["pnl_pct"] for t in losing])) if losing else 0
+
+    avg_win = np.mean([t.pnl_pct for t in winning]) if winning else 0
+    avg_loss = abs(np.mean([t.pnl_pct for t in losing])) if losing else 0
     profit_loss_ratio = avg_win / avg_loss if avg_loss > 0 else 0
 
     max_dd = 0
@@ -416,54 +274,130 @@ def execute_trades(price_data, signals, initial_capital, strategy):
         if dd > max_dd:
             max_dd = dd
 
-    total_return = (capital - initial_capital) / initial_capital
+    if len(equity_curve) > 1:
+        returns = pd.Series(equity_curve).pct_change().dropna()
+        volatility = returns.std() * np.sqrt(252) if len(returns) > 1 else 0.01
+        sharpe = (annual_return - 0.02) / volatility if volatility > 0 else 0
+    else:
+        sharpe = 0
 
-    return {
-        "total_return": total_return,
-        "win_rate": win_rate,
-        "avg_win": avg_win,
-        "avg_loss": avg_loss,
-        "profit_loss_ratio": profit_loss_ratio,
-        "max_drawdown": max_dd,
-        "total_trades": len(trades),
-        "winning_trades": len(winning),
-        "losing_trades": len(losing),
-        "final_capital": capital,
-        "trades": trades,
-    }
+    result = BacktestResult(
+        start_date=start_date,
+        end_date=end_date,
+        initial_capital=initial_capital,
+        final_capital=final_capital,
+        total_return=total_return,
+        annual_return=annual_return,
+        total_trades=len(trades),
+        winning_trades=len(winning),
+        losing_trades=len(losing),
+        win_rate=win_rate,
+        avg_win=avg_win,
+        avg_loss=avg_loss,
+        profit_loss_ratio=profit_loss_ratio,
+        max_drawdown=max_dd,
+        sharpe_ratio=sharpe,
+        trade_details=trades,
+    )
+
+    return result
 
 
-def print_result(result: dict):
-    """打印结果"""
-    print("\n" + "=" * 70)
-    print("回测结果")
-    print("=" * 70)
+def print_v4_result(result: BacktestResult):
+    """打印 V4 回测结果"""
+    print("\n" + "=" * 60)
+    print("V4 策略回测结果")
+    print("=" * 60)
 
-    metrics = [
-        ("总收益率", "total_return"),
-        ("胜率", "win_rate"),
-        ("平均盈利", "avg_win"),
-        ("平均亏损", "avg_loss"),
-        ("盈亏比", "profit_loss_ratio"),
-        ("最大回撤", "max_drawdown"),
-        ("交易次数", "total_trades"),
-        ("盈利次数", "winning_trades"),
-        ("亏损次数", "losing_trades"),
-        ("最终资金", "final_capital"),
-    ]
+    print("\n【盈利指标】")
+    print(f"  初始资金：     {result.initial_capital:>12,.2f} 元")
+    print(f"  最终资金：     {result.final_capital:>12,.2f} 元")
+    print(f"  总收益率：     {result.total_return:>12.2%}")
+    print(f"  年化收益率：   {result.annual_return:>12.2%}")
 
-    for name, key in metrics:
-        val = result[key]
-        if isinstance(val, float):
-            if key == "final_capital":
-                val_str = f"{val:,.2f} 元"
-            else:
-                val_str = f"{val:.2%}" if key in ["total_return", "win_rate", "avg_win", "avg_loss", "max_drawdown"] else f"{val:.2f}"
-        else:
-            val_str = str(val)
-        print(f"{name:<15} {val_str:>20}")
+    print("\n【交易统计】")
+    print(f"  总交易次数：   {result.total_trades:>12} 笔")
+    print(f"  盈利次数：     {result.winning_trades:>12} 笔")
+    print(f"  亏损次数：     {result.losing_trades:>12} 笔")
+    print(f"  胜率：         {result.win_rate:>12.1%}")
 
-    print("=" * 70)
+    if result.winning_trades > 0:
+        print(f"  平均盈利：     {result.avg_win:>12.2%}")
+    if result.losing_trades > 0:
+        print(f"  平均亏损：     {result.avg_loss:>12.2%}")
+    print(f"  盈亏比：       {result.profit_loss_ratio:>12.2f}")
+
+    print("\n【风险指标】")
+    print(f"  最大回撤：     {result.max_drawdown:>12.2%}")
+    print(f"  夏普比率：     {result.sharpe_ratio:>12.2f}")
+
+    print("\n" + "=" * 60)
+    print("评估结论")
+    print("=" * 60)
+
+    passed = []
+    failed = []
+
+    if result.win_rate >= 0.45:
+        passed.append(f"胜率达标 ({result.win_rate:.1%})")
+    else:
+        failed.append(f"胜率偏低 ({result.win_rate:.1%} < 45%)")
+
+    if result.profit_loss_ratio >= 1.5:
+        passed.append(f"盈亏比优秀 ({result.profit_loss_ratio:.2f})")
+    elif result.profit_loss_ratio >= 1.0:
+        passed.append(f"盈亏比合格 ({result.profit_loss_ratio:.2f})")
+    else:
+        failed.append(f"盈亏比偏低 ({result.profit_loss_ratio:.2f} < 1.0)")
+
+    if result.total_return > 0:
+        passed.append(f"实现盈利 (+{result.total_return:.2%})")
+    else:
+        failed.append(f"出现亏损 ({result.total_return:.2%})")
+
+    if result.max_drawdown < 0.15:
+        passed.append(f"回撤控制好 ({result.max_drawdown:.1%})")
+    else:
+        failed.append(f"回撤过大 ({result.max_drawdown:.1%} > 15%)")
+
+    if result.sharpe_ratio > 1:
+        passed.append(f"夏普比率优秀 ({result.sharpe_ratio:.2f})")
+    elif result.sharpe_ratio > 0:
+        passed.append(f"夏普比率正数 ({result.sharpe_ratio:.2f})")
+    else:
+        failed.append(f"夏普比率负数 ({result.sharpe_ratio:.2f})")
+
+    if passed:
+        print("\n[通过项]")
+        for p in passed:
+            print(f"  [OK] {p}")
+
+    if failed:
+        print("\n[需改进项]")
+        for f in failed:
+            print(f"  [!] {f}")
+
+    print("\n" + "=" * 60)
+    if result.total_return > 0 and result.win_rate >= 0.4 and result.profit_loss_ratio >= 1.0:
+        print("【结论】V4 策略实现稳定盈利！")
+    elif result.total_return > 0:
+        print("【结论】V4 策略盈利，指标有待优化")
+    else:
+        print("【结论】V4 策略尚未实现稳定盈利，需继续优化")
+    print("=" * 60)
+
+    if result.trade_details:
+        print(f"\n交易明细 (共 {len(result.trade_details)} 笔):")
+        print(f"  {'股票':<10} {'入场价':>8} {'出场价':>8} {'盈亏':>10} {'盈亏率':>10} {'原因':>10}")
+        print("  " + "-" * 65)
+        for t in result.trade_details:
+            reason_short = t.exit_reason[:10] if t.exit_reason else ""
+            print(f"  {t.stock_code:<10} {t.entry_price:>8.2f} {t.exit_price:>8.2f} "
+                  f"{t.pnl:>10.2f} {t.pnl_pct:>10.2%} {reason_short:>10}")
+
+    print("\n" + "=" * 60)
+    print("免责声明：回测结果仅供参考，不构成投资建议")
+    print("=" * 60)
 
 
 if __name__ == "__main__":
