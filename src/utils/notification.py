@@ -424,6 +424,11 @@ class NotificationManager:
                 code = sig.get("stock_code", "")
                 name = sig.get("stock_name", "") or ""
                 buy_score = sig.get("buy_score", 0)
+                sell_score = sig.get("sell_score", 0)
+                rsi = sig.get("rsi", 0)
+                stop_dist = sig.get("stop_distance", 0)
+                take_profit_dist = sig.get("take_profit_distance", 0)
+                conditions = sig.get("conditions", {})
 
                 # 信号图标 - 使用钉钉支持的 emoji
                 if sig_type in ["strong_buy"]:
@@ -437,7 +442,40 @@ class NotificationManager:
                 else:
                     icon = "⚪"
 
-                summary_lines.append(f"- {icon} **{name}({code})**: {signal_names.get(sig_type, sig_type)} (评分:{buy_score:.2f})")
+                # 构建信号原因
+                reason_parts = []
+                if sig_type in ["buy", "strong_buy"]:
+                    buy_details = conditions.get("buy_details", {}) if conditions else {}
+                    if buy_details.get("above_ma20"):
+                        reason_parts.append("趋势向上")
+                    if buy_details.get("ma5_above_ma10"):
+                        reason_parts.append("短期强势")
+                    if buy_details.get("macd_bullish"):
+                        reason_parts.append("MACD 金叉")
+                    if buy_details.get("rsi_ok"):
+                        reason_parts.append("RSI 健康")
+                    if buy_details.get("volume_up"):
+                        reason_parts.append("放量")
+                    if buy_details.get("new_high"):
+                        reason_parts.append("新高")
+                else:
+                    sell_details = conditions.get("sell_details", {}) if conditions else {}
+                    if sell_details.get("below_ma20"):
+                        reason_parts.append("趋势向下")
+                    if sell_details.get("ma5_below_ma10"):
+                        reason_parts.append("短期弱势")
+                    if sell_details.get("macd_bearish"):
+                        reason_parts.append("MACD 死叉")
+                    if sell_details.get("rsi_overbought"):
+                        reason_parts.append("超买")
+                    if sell_details.get("volume_down"):
+                        reason_parts.append("缩量")
+
+                reason_str = ",".join(reason_parts) if reason_parts else "信号触发"
+
+                summary_lines.append(f"- {icon} **{name}({code})**: {signal_names.get(sig_type, sig_type)}")
+                summary_lines.append(f"  - 原因：{reason_str} | 评分:{buy_score if sig_type in ['buy', 'strong_buy'] else sell_score:.2f} | RSI:{rsi:.0f}")
+                summary_lines.append(f"  - 止损:{stop_dist:.1%} | 止盈:{take_profit_dist:.1%}")
 
         # 添加新建持仓
         if positions:

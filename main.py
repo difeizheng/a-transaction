@@ -138,12 +138,14 @@ class AStockMonitor:
 
         # 7. 初始化改进策略
         self.improved_strategy = ImprovedStrategy(
-            buy_threshold=0.5,
-            sell_threshold=0.4,
-            min_buy_conditions=3,
-            min_sell_conditions=2,
-            atr_multiplier=2.0,
-            profit_ratio=2.5,
+            buy_threshold=0.6,
+            sell_threshold=0.5,
+            min_buy_conditions=4,
+            min_sell_conditions=3,
+            atr_multiplier=2.5,
+            min_stop_distance=0.05,
+            max_stop_distance=0.15,
+            profit_ratio=3.0,
         )
         logger.info("改进策略初始化成功")
 
@@ -508,21 +510,69 @@ class AStockMonitor:
             console.print(pos_table)
 
     def _send_improved_notifications(self, results):
-        """发送改进策略通知"""
+        """发送改进策略通知 - 所有非 hold 信号"""
         if not self.settings.notification_enabled:
             return
 
-        # 筛选重要信号
-        important_signals = [
+        # 筛选所有非 hold 信号
+        all_signals = [
             r for r in results
-            if r["signal"] in ["strong_buy", "strong_sell"]
+            if r["signal"] != "hold"
         ]
 
-        if not important_signals:
+        if not all_signals:
+            logger.debug("本次监控无交易信号，跳过通知")
             return
 
-        # 发送每个重要信号
-        for signal in important_signals[:5]:
+        # 发送每个信号（限制最多 10 个，避免刷屏）
+        for signal in all_signals[:10]:
+            # 构建详细的买卖原因
+            conditions = signal.get("conditions", {})
+            buy_details = conditions.get("buy_details", {})
+            sell_details = conditions.get("sell_details", {})
+
+            reason_parts = []
+
+            if signal["signal"] in ["buy", "strong_buy"]:
+                # 买入信号原因
+                if buy_details.get("above_ma20"):
+                    reason_parts.append("趋势向上 (价>MA20)")
+                if buy_details.get("ma5_above_ma10"):
+                    reason_parts.append("短期强势 (MA5>MA10)")
+                if buy_details.get("macd_bullish"):
+                    reason_parts.append("MACD 金叉")
+                if buy_details.get("rsi_ok"):
+                    reason_parts.append("RSI 健康")
+                if buy_details.get("tech_positive"):
+                    reason_parts.append("技术面积极")
+                if buy_details.get("volume_up"):
+                    reason_parts.append("成交量放大")
+                if buy_details.get("new_high"):
+                    reason_parts.append("突破新高")
+                reason_parts.append(f"买分={signal['buy_score']:.2f}")
+                reason_parts.append(f"RSI={signal['rsi']:.0f}")
+            else:
+                # 卖出信号原因
+                if sell_details.get("below_ma20"):
+                    reason_parts.append("趋势向下 (价<MA20)")
+                if sell_details.get("ma5_below_ma10"):
+                    reason_parts.append("短期弱势 (MA5<MA10)")
+                if sell_details.get("macd_bearish"):
+                    reason_parts.append("MACD 死叉")
+                if sell_details.get("rsi_overbought"):
+                    reason_parts.append("RSI 超买")
+                if sell_details.get("tech_negative"):
+                    reason_parts.append("技术面消极")
+                if sell_details.get("volume_down"):
+                    reason_parts.append("成交量萎缩")
+                reason_parts.append(f"卖分={signal['sell_score']:.2f}")
+                reason_parts.append(f"RSI={signal['rsi']:.0f}")
+
+            reason_parts.append(f"止损={signal['stop_distance']:.1%}")
+            reason_parts.append(f"止盈={signal['take_profit_distance']:.1%}")
+
+            reason = "; ".join(reason_parts)
+
             self.notification.send_signal(
                 stock_code=signal["stock_code"],
                 stock_name=signal["stock_name"],
@@ -533,14 +583,13 @@ class AStockMonitor:
                     "buy": "买入",
                     "sell": "卖出",
                     "strong_sell": "强烈卖出",
+                    "hold": "持有",
                 }.get(signal["signal"], signal["signal"]),
                 price=signal["price"],
-                reason=f"买分={signal['buy_score']:.2f}, "
-                       f"卖分={signal['sell_score']:.2f}, "
-                       f"RSI={signal['rsi']:.0f}, "
-                       f"止损={signal['stop_distance']:.1%}, "
-                       f"止盈={signal['take_profit_distance']:.1%}",
+                reason=reason,
             )
+
+        logger.info(f"已发送 {len(all_signals)} 个交易信号通知")
 
     def _send_monitor_summary(
         self,
