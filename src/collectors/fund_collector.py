@@ -1,11 +1,17 @@
 """
 资金流向采集器 - 获取北向资金、主力资金等数据
+
+混合架构：
+- 个股资金流向：Tushare 优先（更稳定）> AkShare
+- 北向资金：AkShare（唯一数据源）
+- 行业/概念资金流：AkShare
 """
 from typing import Dict, List, Optional
 from datetime import datetime
 import pandas as pd
 
 from src.utils.logger import get_logger
+from src.utils.tushare_client import TushareClient
 
 logger = get_logger(__name__)
 
@@ -21,9 +27,20 @@ class FundCollector:
     - 个股资金流向
     """
 
-    def __init__(self):
+    def __init__(self, tushare_token: str = None):
+        self._tushare = None
         self._akshare = None
+
+        self._init_tushare(tushare_token)
         self._init_akshare()
+
+    def _init_tushare(self, token: str = None):
+        """初始化 Tushare"""
+        if token:
+            self._tushare = TushareClient(token=token)
+            logger.info(f"FundCollector: Tushare 初始化成功 (token={token[:10]}...)")
+        else:
+            logger.info("FundCollector: Tushare 未配置 token，跳过初始化")
 
     def _init_akshare(self):
         """初始化 AkShare"""
@@ -96,12 +113,46 @@ class FundCollector:
         """
         获取个股资金流向
 
+        数据源优先级：Tushare > AkShare
+
         Args:
             stock_code: 股票代码
 
         Returns:
             资金流向数据
         """
+        # 1. 优先尝试 Tushare（需要 200 积分）
+        if self._tushare and self._tushare.is_available():
+            try:
+                import tushare as ts
+                # 标准化股票代码
+                if stock_code.startswith("6"):
+                    ts_code = f"{stock_code}.SH"
+                else:
+                    ts_code = f"{stock_code}.SZ"
+
+                end_date = datetime.now().strftime("%Y%m%d")
+                start = datetime.now() - pd.Timedelta(days=5)
+                start_date = start.strftime("%Y%m%d")
+
+                df = self._tushare.pro.moneyflow(ts_code=ts_code, start_date=start_date, end_date=end_date)
+
+                if df is not None and not df.empty:
+                    latest = df.iloc[-1] if len(df) > 0 else None
+                    if latest is not None:
+                        return {
+                            "code": stock_code,
+                            "main_net_in": float(latest.get("buy_sm_amount", 0)) - float(latest.get("sell_sm_amount", 0)) if "buy_sm_amount" in latest else 0,
+                            "large_order_net_in": float(latest.get("buy_lg_amount", 0)) - float(latest.get("sell_lg_amount", 0)) if "buy_lg_amount" in latest else 0,
+                            "medium_order_net_in": float(latest.get("buy_md_amount", 0)) - float(latest.get("sell_md_amount", 0)) if "buy_md_amount" in latest else 0,
+                            "small_order_net_in": float(latest.get("buy_sm_amount", 0)) - float(latest.get("sell_sm_amount", 0)) if "buy_sm_amount" in latest else 0,
+                            "retail_net_in": 0,  # Tushare 无此字段
+                            "timestamp": datetime.now(),
+                        }
+            except Exception as e:
+                logger.warning(f"Tushare 获取个股资金流向失败 ({stock_code}): {e}，切换到 AkShare")
+
+        # 2. 尝试 AkShare
         if self._akshare is None:
             return None
 

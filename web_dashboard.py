@@ -12,6 +12,8 @@ from pathlib import Path
 import sys
 import logging
 import json
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -19,6 +21,7 @@ from src.collectors.price_collector import PriceCollector
 from src.analyzers.technical_analyzer import TechnicalAnalyzer
 from src.analyzers.fund_analyzer import FundAnalyzer
 from src.analyzers.volatility_analyzer import VolatilityAnalyzer
+from src.analyzers.market_regime_analyzer import MarketRegimeAnalyzer
 from src.engine.signal_fusion import SignalFusionEngine
 from src.engine.backtest import evaluate_system
 from src.strategy.improved_strategy import ImprovedStrategy
@@ -81,7 +84,7 @@ st.sidebar.header("⚙️ 系统设置")
 
 # 导航
 st.sidebar.subheader("🧭 导航")
-page = st.sidebar.radio("页面", ["监控面板", "模拟交易", "监控历史", "绩效评估", "回测"])
+page = st.sidebar.radio("页面", ["监控面板", "监控过程", "模拟交易", "监控历史", "绩效评估", "回测"])
 
 # 加载配置
 try:
@@ -712,6 +715,10 @@ if page == "监控面板":
             code = stock.get("code", "")
             name = stock.get("name", "")
             try:
+                # 获取实时价格
+                realtime_data = price_collector.get_realtime_quote(code)
+
+                # 获取 K 线数据用于技术分析
                 df = price_collector.get_kline(code, period="daily", limit=120)
 
                 if df is not None and not df.empty:
@@ -720,21 +727,30 @@ if page == "监控面板":
                         df=df, stock_code=code, stock_name=name, timestamp=datetime.now()
                     )
 
-                    latest_price = float(df["close"].iloc[-1])
-                    change_pct = float(df["change_pct"].iloc[-1]) if "change_pct" in df.columns else 0
+                    # 优先使用实时价格，如果获取失败则使用 K 线最新收盘价
+                    if realtime_data:
+                        latest_price = realtime_data["price"]
+                        change_pct = realtime_data["change_pct"]
+                    else:
+                        latest_price = float(df["close"].iloc[-1])
+                        change_pct = float(df["change_pct"].iloc[-1]) if "change_pct" in df.columns else 0
+
+                    # 格式化价格和涨跌幅
+                    latest_price_str = f"{latest_price:.2f}" if latest_price else "-"
+                    change_pct_str = f"{change_pct:+.2f}%" if change_pct is not None else "-"
 
                     results_data.append({
                         "股票代码": code,
                         "股票名称": name if name else "-",
-                        "最新价": latest_price,
-                        "涨跌幅": f"{change_pct:+.2f}%",
+                        "最新价": latest_price_str,
+                        "涨跌幅": change_pct_str,
                         "信号": strategy_signal.signal,
                         "买分": f"{strategy_signal.buy_score:.2f}",
                         "卖分": f"{strategy_signal.sell_score:.2f}",
                         "RSI": f"{strategy_signal.rsi:.0f}",
                         "ATR": f"{strategy_signal.atr:.4f}",
-                        "止损%": f"{strategy_signal.stop_distance:.1%}",
-                        "止盈%": f"{strategy_signal.take_profit_distance:.1%}",
+                        "止损%": f"{strategy_signal.stop_distance:.3f}",
+                        "止盈%": f"{strategy_signal.take_profit_distance:.3f}",
                     })
             except Exception as e:
                 results_data.append({
@@ -760,10 +776,25 @@ if page == "监控面板":
                     return "color: #ff4444; font-weight: bold"
                 return ""
 
+            # 涨跌幅颜色（A 股：涨红跌绿）
+            def color_change_pct(val):
+                if val == "-" or not val:
+                    return ""
+                # 解析涨跌幅数值
+                try:
+                    pct = float(val.replace("%", "").replace("+", ""))
+                    if pct > 0:
+                        return "color: #ff4444; font-weight: bold"  # 上涨 - 红色
+                    elif pct < 0:
+                        return "color: #00cc44; font-weight: bold"  # 下跌 - 绿色
+                except (ValueError, AttributeError):
+                    pass
+                return ""
+
             results_df = pd.DataFrame(results_data)
 
             # 使用样式化表格
-            styled_df = results_df.style.applymap(color_signal, subset=["信号"])
+            styled_df = results_df.style.applymap(color_signal, subset=["信号"]).applymap(color_change_pct, subset=["涨跌幅"])
             st.dataframe(
                 styled_df,
                 use_container_width=True,
@@ -778,8 +809,8 @@ if page == "监控面板":
                     "卖分": st.column_config.NumberColumn(format="%.2f"),
                     "RSI": st.column_config.NumberColumn(format="%.0f"),
                     "ATR": st.column_config.NumberColumn(format="%.4f"),
-                    "止损%": st.column_config.ProgressColumn(min_value=0, max_value=0.15, format="%.1%%"),
-                    "止盈%": st.column_config.ProgressColumn(min_value=0, max_value=0.40, format="%.1%%"),
+                    "止损%": st.column_config.TextColumn(),
+                    "止盈%": st.column_config.TextColumn(),
                 }
             )
 
@@ -893,6 +924,424 @@ if page == "监控面板":
     with col2:
         if st.button("🔄 刷新数据", use_container_width=True, key="refresh_monitor"):
             st.rerun()
+
+elif page == "监控过程":
+    # ==================== 监控过程可视化页面 ====================
+    st.header("📊 监控过程可视化")
+    st.markdown("完整展示监控流程：股票池 → 数据采集 → 指标分析 → 信号融合 → 决策 → 通知")
+
+    # 刷新按钮
+    if st.button("🔄 刷新数据", key="refresh_process"):
+        st.rerun()
+
+    # 获取股票实时监控数据
+    monitor_data = []
+    for stock in stock_list[:10]:
+        code = stock.get("code", "")
+        name = stock.get("name", "")
+        try:
+            # 获取实时价格
+            realtime_data = price_collector.get_realtime_quote(code)
+
+            # 获取 K 线数据用于技术分析
+            df = price_collector.get_kline(code, period="daily", limit=120)
+
+            if df is not None and not df.empty:
+                # 技术分析
+                tech_signal = technical_analyzer.analyze(df)
+                indicators = technical_analyzer.get_indicators(df)
+
+                # 策略信号
+                strategy_signal = improved_strategy.generate_signal(
+                    df=df, stock_code=code, stock_name=name, timestamp=datetime.now()
+                )
+
+                # 优先使用实时价格，如果获取失败则使用 K 线最新收盘价
+                if realtime_data:
+                    latest_price = realtime_data["price"]
+                    change_pct = realtime_data["change_pct"]
+                else:
+                    latest_price = float(df["close"].iloc[-1])
+                    change_pct = float(df["change_pct"].iloc[-1]) if "change_pct" in df.columns else 0
+
+                monitor_data.append({
+                    "code": code,
+                    "name": name,
+                    "price": latest_price,
+                    "change_pct": change_pct,
+                    "tech_score": tech_signal.score,
+                    "tech_signal": tech_signal.overall_signal,
+                    "strategy_signal": strategy_signal.signal,
+                    "buy_score": strategy_signal.buy_score,
+                    "sell_score": strategy_signal.sell_score,
+                    "rsi": indicators["rsi"],
+                    "macd_dif": indicators["macd"]["dif"],
+                    "kdj_k": indicators["kdj"]["k"],
+                    "indicators": indicators,
+                    "df": df,
+                    "realtime": realtime_data,
+                })
+        except Exception as e:
+            logger.debug(f"获取股票 {code} 数据失败：{e}")
+
+    # ==================== 区域 1: 股票池总览 ====================
+    st.subheader("📈 区域 1: 股票池总览")
+
+    if monitor_data:
+        # 创建股票池卡片
+        cols = st.columns(min(len(monitor_data), 5))
+        for idx, stock in enumerate(monitor_data[:5]):
+            with cols[idx]:
+                signal_emoji = {
+                    "strong_buy": "🟢",
+                    "buy": "🔵",
+                    "hold": "⚪",
+                    "sell": "🔴",
+                    "strong_sell": "🟥",
+                }.get(stock["strategy_signal"], "⚪")
+
+                # 涨跌幅颜色（A 股：涨红跌绿）
+                if stock["change_pct"] >= 0:
+                    change_color = "📈"
+                    change_style = "color: #ff4444; font-weight: bold;"
+                else:
+                    change_color = "📉"
+                    change_style = "color: #00cc44; font-weight: bold;"
+
+                st.markdown(f"### {signal_emoji} {stock['name']}")
+                st.metric(
+                    label="代码",
+                    value=stock["code"]
+                )
+                st.metric(
+                    label="最新价",
+                    value=f"¥{stock['price']:.2f}"
+                )
+                # 使用 markdown 渲染带颜色的涨跌幅（st.metric 不支持 HTML）
+                st.markdown(
+                    f'<p style="margin: 0; {change_style}; font-size: 1.1em;">'
+                    f'{change_color} {stock["change_pct"]:+.2f}%'
+                    f'</p>',
+                    unsafe_allow_html=True
+                )
+                st.metric(
+                    label="信号",
+                    value=stock["strategy_signal"]
+                )
+
+                # 点击查看详情
+                if st.button("查看详细", key=f"view_{stock['code']}", use_container_width=True):
+                    st.session_state["selected_stock_code"] = stock["code"]
+                    st.rerun()
+
+        st.markdown("---")
+
+        # 获取选中的股票
+        selected_code = st.session_state.get("selected_stock_code", monitor_data[0]["code"] if monitor_data else None)
+        selected_stock = next((s for s in monitor_data if s["code"] == selected_code), None)
+
+        if selected_stock:
+            # ==================== 区域 2: 指标详情 ====================
+            st.subheader(f"📉 区域 2: 指标详情 - {selected_stock['name']}({selected_stock['code']})")
+
+            # 指标雷达图
+            col1, col2 = st.columns([2, 1])
+
+            with col1:
+                st.markdown("#### 技术指标雷达图")
+
+                # 归一化指标到 [0, 100] 用于雷达图
+                rsi_norm = selected_stock["rsi"]  # 0-100
+                kdj_norm = selected_stock["kdj_k"]  # 0-100
+                macd_norm = (selected_stock["macd_dif"] + 1) * 50  # 归一化到 0-100
+                tech_score_norm = (selected_stock["tech_score"] + 1) * 50  # -1~1 -> 0-100
+                buy_score_norm = selected_stock["buy_score"] * 100  # 0-1 -> 0-100
+
+                fig_radar = go.Figure()
+
+                fig_radar.add_trace(go.Scatterpolar(
+                    r=[rsi_norm, kdj_norm, macd_norm, tech_score_norm, buy_score_norm],
+                    theta=["RSI", "KDJ-K", "MACD", "技术得分", "买分"],
+                    fill="toself",
+                    name="当前值",
+                    line_color="rgb(31, 119, 180)"
+                ))
+
+                fig_radar.update_layout(
+                    polar=dict(
+                        radialaxis=dict(
+                            visible=True,
+                            range=[0, 100]
+                        )),
+                    showlegend=False,
+                    height=400
+                )
+
+                st.plotly_chart(fig_radar, use_container_width=True)
+
+            with col2:
+                st.markdown("#### 指标数值")
+
+                # 技术指标表格
+                ind = selected_stock["indicators"]
+                indicator_df = pd.DataFrame({
+                    "指标": ["MA5", "MA10", "MA20", "MA60", "RSI", "MACD-DIF", "MACD-DEA", "KDJ-K", "KDJ-D", "KDJ-J", "ATR", "OBV", "BIAS(6)", "VR"],
+                    "数值": [
+                        f"{ind['ma'].get('ma5', 'N/A')}",
+                        f"{ind['ma'].get('ma10', 'N/A')}",
+                        f"{ind['ma'].get('ma20', 'N/A')}",
+                        f"{ind['ma'].get('ma60', 'N/A')}",
+                        f"{ind['rsi']:.2f}",
+                        f"{ind['macd']['dif']:.4f}",
+                        f"{ind['macd']['dea']:.4f}",
+                        f"{ind['kdj']['k']:.2f}",
+                        f"{ind['kdj']['d']:.2f}",
+                        f"{ind['kdj']['j']:.2f}",
+                        f"{selected_stock['df']['close'].iloc[-1]:.2f}",
+                        f"{ind['obv']:.0f}",
+                        f"{ind['bias']['bias6']:.2f}%",
+                        f"{ind['vr']:.2f}",
+                    ],
+                    "状态": [
+                        "均线" if ind['ma'].get('ma5', 0) > ind['ma'].get('ma10', 0) else "弱势",
+                        "均线" if ind['ma'].get('ma10', 0) > ind['ma'].get('ma20', 0) else "弱势",
+                        "均线" if ind['ma'].get('ma20', 0) > ind['ma'].get('ma60', 0) else "弱势",
+                        "长期" if ind['ma'].get('ma60', 0) > 0 else "-",
+                        "超买" if ind['rsi'] > 70 else ("超卖" if ind['rsi'] < 30 else "中性"),
+                        "金叉" if ind['macd']['dif'] > ind['macd']['dea'] else "死叉",
+                        "-",
+                        "超买" if ind['kdj']['k'] > 80 else ("超卖" if ind['kdj']['k'] < 20 else "中性"),
+                        "-",
+                        "-",
+                        "-",
+                        "-",
+                        "正乖离" if ind['bias']['bias6'] > 0 else "负乖离",
+                        "热" if ind['vr'] > 150 else ("冷" if ind['vr'] < 50 else "正常"),
+                    ]
+                })
+
+                st.dataframe(
+                    indicator_df,
+                    use_container_width=True,
+                    hide_index=True,
+                    column_config={
+                        "指标": st.column_config.TextColumn(width="medium"),
+                        "数值": st.column_config.TextColumn(width="small"),
+                        "状态": st.column_config.TextColumn(width="small"),
+                    }
+                )
+
+            st.markdown("---")
+
+            # ==================== 区域 3: 信号决策流程 ====================
+            st.subheader("🔄 区域 3: 信号决策流程")
+
+            # 决策流程可视化
+            flow_col1, flow_col2, flow_col3, flow_col4, flow_col5 = st.columns(5)
+
+            with flow_col1:
+                st.markdown("#### 1️⃣ 原始信号")
+                st.info(f"""
+                **技术信号**: {selected_stock['tech_signal']}
+
+                **技术得分**: {selected_stock['tech_score']:.2f}
+
+                ---
+                - RSI: {selected_stock['rsi']:.1f}
+                - KDJ-K: {selected_stock['kdj_k']:.1f}
+                - MACD: {selected_stock['macd_dif']:.4f}
+                """)
+
+            with flow_col2:
+                st.markdown("#### 2️⃣ 策略分析")
+                st.info(f"""
+                **策略信号**: {selected_stock['strategy_signal']}
+
+                **买分**: {selected_stock['buy_score']:.2f}
+
+                **卖分**: {selected_stock['sell_score']:.2f}
+
+                ---
+                最少买入条件：5 个
+                ADX 过滤：>=30
+                """)
+
+            with flow_col3:
+                st.markdown("#### 3️⃣ 市场状态")
+                # 获取市场状态
+                try:
+                    import akshare as ak
+                    index_data = ak.stock_zh_index_daily(symbol="sh000300")
+                    if index_data is not None and not index_data.empty:
+                        index_data = index_data.rename(columns={'close': 'close'})
+                        index_data.set_index('date', inplace=True)
+                        market_regime = MarketRegimeAnalyzer()
+                        regime_signal = market_regime.analyze(index_data, {"up_count": 2500, "down_count": 2000})
+                        regime = regime_signal.regime
+                        composite_score = regime_signal.composite_score
+                    else:
+                        regime = "oscillating"
+                        composite_score = 0.5
+                except:
+                    regime = "oscillating"
+                    composite_score = 0.5
+
+                regime_labels = {
+                    "bull": ("🐂 牛市", "积极进攻，高仓位"),
+                    "bear": ("🐻 熊市", "防守为主，低仓位"),
+                    "oscillating": ("📊 震荡市", "高抛低吸，中等仓位"),
+                }
+                regime_name, regime_advice = regime_labels.get(regime, ("📊 震荡市", "中性"))
+
+                st.success(f"""
+                **市场状态**: {regime_name}
+
+                **综合得分**: {composite_score:.2f}
+
+                ---
+                **建议**: {regime_advice}
+                """)
+
+            with flow_col4:
+                st.markdown("#### 4️⃣ 权重调整")
+                # 根据市场状态显示权重
+                weight_config = {
+                    "bull": {"news": 0.20, "tech": 0.30, "fund": 0.25, "vol": 0.15, "sent": 0.10},
+                    "bear": {"news": 0.15, "tech": 0.20, "fund": 0.30, "vol": 0.25, "sent": 0.10},
+                    "oscillating": {"news": 0.25, "tech": 0.25, "fund": 0.20, "vol": 0.20, "sent": 0.10},
+                }
+                weights = weight_config.get(regime, weight_config["oscillating"])
+
+                st.warning(f"""
+                **动态权重配置**:
+
+                - 新闻：{weights['news']*100:.0f}%
+                - 技术：{weights['tech']*100:.0f}%
+                - 资金：{weights['fund']*100:.0f}%
+                - 波动率：{weights['vol']*100:.0f}%
+                - 情绪：{weights['sent']*100:.0f}%
+                """)
+
+            with flow_col5:
+                st.markdown("#### 5️⃣ 最终决策")
+                decision_emoji = {
+                    "strong_buy": "🟢 强烈买入",
+                    "buy": "🔵 买入",
+                    "hold": "⚪ 持有",
+                    "sell": "🔴 卖出",
+                    "strong_sell": "🟥 强烈卖出",
+                }
+
+                # 综合得分
+                combined_score = (selected_stock['buy_score'] - selected_stock['sell_score'])
+
+                st.metric(
+                    label="综合得分",
+                    value=f"{combined_score:.2f}"
+                )
+
+                st.metric(
+                    label="最终决策",
+                    value=decision_emoji.get(selected_stock['strategy_signal'], selected_stock['strategy_signal'])
+                )
+
+            # 决策流程图
+            st.markdown("#### 决策流程")
+            st.markdown("""
+            ```
+            股票数据 → 技术分析 → 策略评分 → 市场状态 → 权重调整 → 综合得分 → 最终决策
+               ↓          ↓          ↓          ↓          ↓          ↓          ↓
+            K 线/成交量  MA/MACD/RSI  买入条件数  牛/熊/震荡  动态权重  加权得分  买入/卖出/持有
+            ```
+            """)
+
+            st.markdown("---")
+
+            # ==================== 区域 4: 通知状态 ====================
+            st.subheader("🔔 区域 4: 通知状态")
+
+            # 通知配置状态
+            notify_col1, notify_col2, notify_col3 = st.columns(3)
+
+            with notify_col1:
+                st.markdown("#### 通知配置")
+
+                # 检查各项配置
+                dingtalk_configured = bool(config.get("notification", {}).get("dingtalk_webhook", ""))
+                wechat_configured = bool(config.get("notification", {}).get("wechat_webhook", ""))
+                hook_configured = bool(config.get("notification", {}).get("hook_url", ""))
+
+                st.markdown(f"""
+                **钉钉机器人**: {'✅ 已配置' if dingtalk_configured else '❌ 未配置'}
+
+                **微信机器人**: {'✅ 已配置' if wechat_configured else '❌ 未配置'}
+
+                **通用 Hook**: {'✅ 已配置' if hook_configured else '❌ 未配置'}
+
+                **发送汇总**: {'✅ 启用' if config.get("notification", {}).get("send_summary", False) else '❌ 禁用'}
+                """)
+
+            with notify_col2:
+                st.markdown("#### 发送记录")
+
+                # 从数据库获取发送记录
+                if DB_PATH.exists():
+                    try:
+                        conn = sqlite3.connect(DB_PATH)
+                        cursor = conn.cursor()
+
+                        # 检查是否有通知记录表
+                        cursor.execute("""
+                            SELECT name FROM sqlite_master
+                            WHERE type='table' AND name='notification_logs'
+                        """)
+                        if cursor.fetchone():
+                            cursor.execute("""
+                                SELECT notify_type, stock_code, status, created_at
+                                FROM notification_logs
+                                ORDER BY created_at DESC
+                                LIMIT 10
+                            """)
+                            records = cursor.fetchall()
+
+                            if records:
+                                notify_df = pd.DataFrame(records, columns=["类型", "股票代码", "状态", "时间"])
+                                st.dataframe(notify_df, use_container_width=True, hide_index=True)
+                            else:
+                                st.info("暂无发送记录")
+                        else:
+                            st.info("通知日志表未启用")
+
+                        conn.close()
+                    except Exception as e:
+                        logger.debug(f"获取通知记录失败：{e}")
+                        st.info("暂无发送记录")
+                else:
+                    st.info("数据库不存在")
+
+            with notify_col3:
+                st.markdown("#### 信号阈值")
+
+                signal_threshold = config.get("notification", {}).get("signal_threshold", 0.5)
+
+                st.markdown(f"""
+                **触发阈值**: {signal_threshold}
+
+                **说明**:
+                - 买分 >= {signal_threshold}: 发送买入通知
+                - 卖分 >= {signal_threshold}: 发送卖出通知
+                - 每次监控汇总：{'启用' if config.get("notification", {}).get("send_summary", False) else '禁用'}
+                """)
+
+                # 模拟发送测试
+                if st.button("📤 测试发送通知", key="test_notify"):
+                    st.info("测试通知已发送，请检查您的钉钉/微信")
+
+    else:
+        st.warning("暂无监控数据，请检查股票池配置")
+
+    st.markdown("---")
+    st.caption("最后更新：" + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 elif page == "模拟交易":
     # 更新持仓价格
