@@ -92,36 +92,78 @@ st.sidebar.header("⚙️ 系统设置")
 
 # 导航 - 分区域显示
 st.sidebar.markdown("---")
-st.sidebar.subheader("📊 核心功能")
+# 核心功能模块
 core_pages = [
     "📊 监控面板",
     "🔍 监控过程",
     "💼 模拟交易",
+    "📡 数据采集",
 ]
 
-st.sidebar.subheader("📈 分析模块")
+# 分析模块
 analysis_pages = [
-    "📡 数据采集",
     "📰 情感分析",
     "📉 技术分析",
     "🔀 信号融合",
     "🌐 社交媒体",
 ]
 
-st.sidebar.subheader("⚠️ 风险监控")
+# 风险监控模块
 risk_pages = [
     "⚠️ 黑天鹅检测",
 ]
 
-st.sidebar.subheader("📚 历史与评估")
+# 历史与评估模块
 history_pages = [
     "📜 监控历史",
     "📈 绩效评估",
     "🔙 回测",
 ]
 
-all_pages = core_pages + analysis_pages + risk_pages + history_pages
-page = st.sidebar.radio("", all_pages, index=0, key="nav_selection")
+# 初始化页面状态
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "📊 监控面板"
+
+# 使用按钮组显示导航，每个模块下的菜单项分组显示
+page_buttons = []
+
+# 核心功能模块
+for page_name in core_pages:
+    is_current = page_name == st.session_state.current_page
+    btn_type = "primary" if is_current else "secondary"
+    if st.sidebar.button(page_name, use_container_width=True, key=f"btn_{page_name}", type=btn_type):
+        st.session_state.current_page = page_name
+    page_buttons.append(page_name)
+
+st.sidebar.markdown("---")
+# 分析模块
+for page_name in analysis_pages:
+    is_current = page_name == st.session_state.current_page
+    btn_type = "primary" if is_current else "secondary"
+    if st.sidebar.button(page_name, use_container_width=True, key=f"btn_{page_name}", type=btn_type):
+        st.session_state.current_page = page_name
+    page_buttons.append(page_name)
+
+st.sidebar.markdown("---")
+# 风险监控模块
+for page_name in risk_pages:
+    is_current = page_name == st.session_state.current_page
+    btn_type = "primary" if is_current else "secondary"
+    if st.sidebar.button(page_name, use_container_width=True, key=f"btn_{page_name}", type=btn_type):
+        st.session_state.current_page = page_name
+    page_buttons.append(page_name)
+
+st.sidebar.markdown("---")
+# 历史与评估模块
+for page_name in history_pages:
+    is_current = page_name == st.session_state.current_page
+    btn_type = "primary" if is_current else "secondary"
+    if st.sidebar.button(page_name, use_container_width=True, key=f"btn_{page_name}", type=btn_type):
+        st.session_state.current_page = page_name
+    page_buttons.append(page_name)
+
+# 获取当前页面
+page = st.session_state.current_page
 
 # 加载配置
 try:
@@ -419,13 +461,37 @@ elif page == "🔍 监控过程":
 
         if selected_stock:
             ind = selected_stock["indicators"]
+            # 安全获取指标，避免KeyError
+            atr_value = "N/A"
+            obv_value = ind.get('obv', 'N/A')
+
+            # 尝试计算ATR
+            try:
+                stock_df = components["price_collector"].get_kline(selected, period="daily", limit=120)
+                if stock_df is not None and not stock_df.empty:
+                    atr_value = components["volatility_analyzer"].get_current_atr(stock_df)
+            except:
+                atr_value = "N/A"
+
+            # 格式化显示
+            if obv_value != 'N/A':
+                obv_display = f"{obv_value:.0f}"
+            else:
+                obv_display = "N/A"
+
+            if atr_value != "N/A" and atr_value != 0:
+                atr_display = f"{atr_value:.4f}"
+            else:
+                atr_display = "N/A"
+
             ind_df = pd.DataFrame({
                 "指标": ["MA5", "MA10", "MA20", "RSI", "MACD-DIF", "KDJ-K", "ATR", "OBV"],
                 "数值": [
                     f"{ind['ma'].get('ma5', 'N/A')}", f"{ind['ma'].get('ma10', 'N/A')}",
                     f"{ind['ma'].get('ma20', 'N/A')}", f"{ind['rsi']:.2f}",
                     f"{ind['macd']['dif']:.4f}", f"{ind['kdj']['k']:.2f}",
-                    f"{ind['atr']:.4f}", f"{ind['obv']:.0f}",
+                    atr_display,
+                    obv_display,
                 ],
                 "状态": ["均线"] * 4 + ["金叉" if ind['macd']['dif'] > ind['macd']['dea'] else "死叉"] + ["中性"] * 3,
             })
@@ -569,12 +635,32 @@ elif page == "📉 技术分析":
 
         with tab4:
             indicators = components["technical_analyzer"].get_indicators(df)
+
+            # 安全获取ATR和OBV
+            atr_value = "N/A"
+            try:
+                atr_value = components["volatility_analyzer"].get_current_atr(df)
+            except:
+                pass
+
+            obv_value = indicators.get('obv', 'N/A')
+            if obv_value == 'N/A':
+                obv_display = "N/A"
+            else:
+                obv_display = f"{obv_value:.0f}"
+
             ind_df = pd.DataFrame({
                 "指标": ["RSI", "ATR", "OBV", "BIAS(6)", "VR", "布林上轨", "布林中轨", "布林下轨"],
-                "数值": [f"{indicators['rsi']:.2f}", f"{indicators['atr']:.4f}", f"{indicators['obv']:.0f}",
-                        f"{indicators['bias']['bias6']:.2f}%", f"{indicators['vr']:.2f}",
-                        f"{indicators['boll']['upper']:.2f}", f"{indicators['boll']['middle']:.2f}",
-                        f"{indicators['boll']['lower']:.2f}"],
+                "数值": [
+                    f"{indicators.get('rsi', 'N/A'):.2f}" if indicators.get('rsi') is not None else "N/A",
+                    f"{atr_value:.4f}" if atr_value != "N/A" and atr_value != 0 else "N/A",
+                    obv_display,
+                    f"{indicators.get('bias', {}).get('bias6', 'N/A'):.2f}%" if indicators.get('bias', {}).get('bias6') is not None else "N/A",
+                    f"{indicators.get('vr', 'N/A'):.2f}" if indicators.get('vr') is not None else "N/A",
+                    f"{indicators.get('boll', {}).get('upper', 'N/A'):.2f}" if indicators.get('boll', {}).get('upper') is not None else "N/A",
+                    f"{indicators.get('boll', {}).get('middle', 'N/A'):.2f}" if indicators.get('boll', {}).get('middle') is not None else "N/A",
+                    f"{indicators.get('boll', {}).get('lower', 'N/A'):.2f}" if indicators.get('boll', {}).get('lower') is not None else "N/A",
+                ],
             })
             st.dataframe(ind_df, use_container_width=True, hide_index=True)
 
