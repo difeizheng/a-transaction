@@ -1,5 +1,10 @@
 """
 风险管理模块 - 交易风险控制
+
+组合级风控功能：
+- 组合最大回撤控制 (>15% 强制降仓)
+- 行业集中度限制 (单一行业≤30%)
+- 相关性检查 (避免持有高相关股票)
 """
 from typing import Dict, List, Optional, Set, Tuple
 from dataclasses import dataclass, field
@@ -354,8 +359,134 @@ class RiskManager:
 
         return (False, "风险可控")
 
+    def check_industry_concentration(
+        self,
+        positions: Dict[str, Dict],
+        total_assets: float,
+    ) -> Tuple[bool, str, Dict[str, float]]:
+        """
+        检查行业集中度
 
-# 导入 Tuple 用于类型注解
-from typing import Tuple
+        Args:
+            positions: 当前持仓 {stock_code: {market_value, industry, ...}}
+            total_assets: 总资产
+
+        Returns:
+            (是否超过限制，原因，行业集中度字典)
+        """
+        industry_exposure: Dict[str, float] = {}
+
+        # 计算各行业持仓占比
+        for stock_code, pos in positions.items():
+            industry = pos.get("industry", "未知行业")
+            market_value = pos.get("market_value", 0)
+
+            if industry not in industry_exposure:
+                industry_exposure[industry] = 0
+            industry_exposure[industry] += market_value
+
+        # 转换为占比
+        for industry in industry_exposure:
+            industry_exposure[industry] /= total_assets
+
+        # 检查是否超过限制
+        for industry, exposure in industry_exposure.items():
+            if exposure > self.max_industry_exposure:
+                return (
+                    False,
+                    f"行业 {industry} 集中度过高 ({exposure:.1%} > {self.max_industry_exposure:.1%})",
+                    industry_exposure
+                )
+
+        return (True, "行业集中度符合要求", industry_exposure)
+
+    def check_correlation(
+        self,
+        positions: Dict[str, Dict],
+        correlation_matrix: Optional[Dict[str, Dict[str, float]]] = None,
+        correlation_threshold: float = 0.8,
+    ) -> Tuple[bool, str, List[Tuple[str, str]]]:
+        """
+        检查持仓股票相关性
+
+        Args:
+            positions: 当前持仓 {stock_code: {...}}
+            correlation_matrix: 相关性矩阵 {stock1: {stock2: corr, ...}}
+            correlation_threshold: 高相关阈值
+
+        Returns:
+            (是否安全，原因，高相关股票对列表)
+        """
+        if not positions or correlation_matrix is None:
+            return (True, "无法检查相关性（数据不足）", [])
+
+        stock_codes = list(positions.keys())
+        high_corr_pairs: List[Tuple[str, str]] = []
+
+        # 检查所有股票对的相关性
+        for i, code1 in enumerate(stock_codes):
+            for code2 in stock_codes[i + 1:]:
+                corr = correlation_matrix.get(code1, {}).get(code2, 0)
+                if abs(corr) >= correlation_threshold:
+                    high_corr_pairs.append((code1, code2))
+
+        if high_corr_pairs:
+            pairs_str = ", ".join([f"{p[0]}-{p[1]}" for p in high_corr_pairs])
+            return (
+                False,
+                f"发现高相关股票对：{pairs_str} (相关系数≥{correlation_threshold})",
+                high_corr_pairs
+            )
+
+        return (True, "持仓股票相关性正常", high_corr_pairs)
+
+    def should_force_reduce_position(
+        self,
+        current_drawdown: float,
+    ) -> Tuple[bool, float, str]:
+        """
+        判断是否应该强制减仓（组合最大回撤控制）
+
+        Args:
+            current_drawdown: 当前回撤
+
+        Returns:
+            (是否强制减仓，建议减仓比例，原因)
+        """
+        # 回撤超过 80% 限制时，开始强制减仓
+        if current_drawdown >= self.max_drawdown * 0.8:
+            # 计算减仓比例（回撤越大，减仓越多）
+            excess_drawdown = current_drawdown - self.max_drawdown * 0.8
+            remaining_buffer = self.max_drawdown * 0.2
+            reduce_ratio = min(0.5, excess_drawdown / remaining_buffer)
+
+            return (
+                True,
+                round(reduce_ratio, 2),
+                f"组合回撤 {current_drawdown:.1%} 接近限制 {self.max_drawdown:.1%}，建议减仓 {reduce_ratio:.0%}"
+            )
+
+        return (False, 0.0, "组合风险可控")
+
+    def get_position_limit_by_drawdown(self) -> float:
+        """
+        根据当前回撤动态获取仓位上限
+
+        Returns:
+            仓位上限 [0, 1]
+        """
+        current_drawdown = getattr(self, "_current_drawdown", 0)
+        max_drawdown = getattr(self, "_max_drawdown_recorded", 0)
+
+        # 回撤越大，仓位上限越低
+        if max_drawdown >= self.max_drawdown:
+            return 0.3  # 已达最大回撤，强制降至 30% 仓位
+        elif max_drawdown >= self.max_drawdown * 0.8:
+            return 0.5  # 回撤接近限制，仓位上限 50%
+        elif max_drawdown >= self.max_drawdown * 0.5:
+            return 0.7  # 回撤中等，仓位上限 70%
+        else:
+            return self.max_total_position  # 正常情况，使用默认上限
+
 
 __all__ = ["RiskManager", "RiskMetrics"]

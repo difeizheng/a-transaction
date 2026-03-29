@@ -35,6 +35,7 @@ class ImprovedStrategy:
         self.sell_score_threshold = -0.15    # 卖出阈值
         self.min_volume_ratio = 1.0          # 最小成交量比率
         self.trend_confirmation_days = 5     # 趋势确认天数
+        self.adx_threshold = 30              # ADX 趋势强度阈值（>=30 为强趋势，<30 为震荡市）
 
     def generate_signals(self, df: pd.DataFrame, stock_code: str) -> list:
         """
@@ -73,6 +74,31 @@ class ImprovedStrategy:
         rs = gain / loss
         rsi = 100 - (100 / (1 + rs))
 
+        # ADX - 趋势强度指标
+        # 计算 +DM 和 -DM
+        high = df['high']
+        low = df['low']
+        close = df['close']
+        plus_dm = high.diff()
+        minus_dm = -low.diff()
+        plus_dm = plus_dm.where((plus_dm > minus_dm) & (plus_dm > 0), 0)
+        minus_dm = minus_dm.where((minus_dm > plus_dm) & (minus_dm > 0), 0)
+
+        # 计算 TR
+        tr1 = high - low
+        tr2 = abs(high - close.shift(1))
+        tr3 = abs(low - close.shift(1))
+        tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+
+        # 平滑计算（Wilder's 方法）
+        tr_smooth = tr.ewm(span=14, adjust=False).mean()
+        plus_di = 100 * (plus_dm.ewm(span=14, adjust=False).mean() / tr_smooth)
+        minus_di = 100 * (minus_dm.ewm(span=14, adjust=False).mean() / tr_smooth)
+
+        # 计算 DX 和 ADX
+        dx = 100 * abs(plus_di - minus_di) / (plus_di + minus_di)
+        adx = dx.ewm(span=14, adjust=False).mean()
+
         # 波动率
         atr = self.volatility_analyzer.get_current_atr(df)
 
@@ -96,41 +122,54 @@ class ImprovedStrategy:
             curr_volume = df['volume'].iloc[i]
             volume_ratio = curr_volume / avg_volume if avg_volume > 0 else 1
 
-            # === 买入信号（多条件确认）===
+            # === 买入信号（多条件确认 + 震荡过滤）===
             buy_conditions = 0
             buy_score = 0
 
-            # 条件 1: 价格在 MA20 之上（趋势向上）
-            if current_price > curr_ma20:
+            # 条件 0: ADX >= 30（强趋势市）- 新增过滤条件
+            # 如果 ADX < 30，说明是震荡市，直接禁止买入
+            curr_adx = float(adx.iloc[i]) if i >= 30 and not pd.isna(adx.iloc[i]) else 0
+            is_trend_market = curr_adx >= self.adx_threshold
+
+            if not is_trend_market:
+                # 震荡市，跳过所有买入逻辑
+                signal_type = "hold"
+            else:
+                # 趋势市，继续评估其他条件
                 buy_conditions += 1
-                buy_score += 0.3
+                buy_score += 0.35  # ADX 权重高
 
-            # 条件 2: MA5 > MA10（短期强势）
-            if curr_ma5 > curr_ma10:
-                buy_conditions += 1
-                buy_score += 0.2
+                # 条件 1: 价格在 MA20 之上（趋势向上）
+                if current_price > curr_ma20:
+                    buy_conditions += 1
+                    buy_score += 0.3
 
-            # 条件 3: MACD 金叉或 DIF>0
-            if (curr_macd > 0) or (curr_macd > prev_macd and prev_macd <= 0):
-                buy_conditions += 1
-                buy_score += 0.3
+                # 条件 2: MA5 > MA10（短期强势）
+                if curr_ma5 > curr_ma10:
+                    buy_conditions += 1
+                    buy_score += 0.2
 
-            # 条件 4: RSI 未超买 (30-70 区间)
-            if 30 < curr_rsi < 70:
-                buy_conditions += 1
-                buy_score += 0.2
+                # 条件 3: MACD 金叉或 DIF>0
+                if (curr_macd > 0) or (curr_macd > prev_macd and prev_macd <= 0):
+                    buy_conditions += 1
+                    buy_score += 0.3
 
-            # 条件 5: 技术得分正面
-            if tech_signal.score > 0:
-                buy_score += 0.2
+                # 条件 4: RSI 未超买 (30-70 区间)
+                if 30 < curr_rsi < 70:
+                    buy_conditions += 1
+                    buy_score += 0.2
 
-            # 条件 6: 成交量放大
-            if volume_ratio > 1.2:
-                buy_score += 0.1
+                # 条件 5: 技术得分正面
+                if tech_signal.score > 0:
+                    buy_score += 0.2
 
-            # 条件 7: 价格创新高（N 日）
-            if current_price >= df['high'].iloc[i-20:i+1].max():
-                buy_score += 0.2
+                # 条件 6: 成交量放大
+                if volume_ratio > 1.2:
+                    buy_score += 0.1
+
+                # 条件 7: 价格创新高（N 日）
+                if current_price >= df['high'].iloc[i-20:i+1].max():
+                    buy_score += 0.2
 
             # === 卖出信号 ===
             sell_conditions = 0
@@ -214,7 +253,7 @@ class ImprovedStrategy:
 def run_improved_backtest():
     """运行改进版回测"""
     print("=" * 60)
-    print("改进版策略回测 - 多条件确认 + ATR 动态止损")
+    print("改进版策略 V3 回测 - 多条件确认 + ATR 动态止损 + ADX 震荡过滤")
     print("=" * 60)
 
     # 配置

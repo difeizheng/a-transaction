@@ -44,6 +44,7 @@ class Settings:
 
     # 风险配置
     max_drawdown: float = 0.15
+    max_industry_exposure: float = 0.30  # 单行业最大暴露 30%
     blacklist: List[str] = field(default_factory=list)
     exclude_st: bool = True
     exclude_kcb: bool = False
@@ -95,6 +96,7 @@ class Settings:
             min_buy_score=trading.get("min_buy_score", 0.5),
             max_sell_score=trading.get("max_sell_score", -0.6),
             max_drawdown=risk.get("max_drawdown", 0.15),
+            max_industry_exposure=risk.get("max_industry_exposure", 0.30),
             blacklist=risk.get("blacklist", []),
             exclude_st=risk.get("excluded_st", True),
             exclude_kcb=risk.get("excluded_kcb", False),

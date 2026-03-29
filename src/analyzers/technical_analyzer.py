@@ -91,6 +91,11 @@ class TechnicalAnalyzer:
         kdj_data = self.calculate_kdj(df)
         boll_data = self.calculate_boll(df)
 
+        # 新增指标
+        obv_data = self.calculate_obv(df)
+        bias_data = self.calculate_bias(df)
+        vr_data = self.calculate_vr(df)
+
         # 生成各指标信号
         ma_signal = self._get_ma_signal(ma_data, df)
         macd_signal = self._get_macd_signal(macd_data)
@@ -98,9 +103,10 @@ class TechnicalAnalyzer:
         kdj_signal = self._get_kdj_signal(kdj_data)
         boll_signal = self._get_boll_signal(boll_data, df)
 
-        # 计算综合得分
+        # 计算综合得分（加入新指标权重）
         score = self._calculate_combined_score(
-            ma_signal, macd_signal, rsi_signal, kdj_signal, boll_signal
+            ma_signal, macd_signal, rsi_signal, kdj_signal, boll_signal,
+            obv_data, bias_data, vr_data
         )
 
         # 确定综合信号
@@ -410,16 +416,22 @@ class TechnicalAnalyzer:
         rsi_signal: str,
         kdj_signal: str,
         boll_signal: str,
+        obv_data: pd.Series = None,
+        bias_data: Dict[str, pd.Series] = None,
+        vr_data: pd.Series = None,
     ) -> float:
         """
         计算综合得分
 
-        权重分配：
-        - MA: 25%
-        - MACD: 25%
-        - RSI: 15%
-        - KDJ: 15%
-        - BOLL: 20%
+        权重分配（加入新指标后重新调整）：
+        - MA: 20%
+        - MACD: 20%
+        - RSI: 12%
+        - KDJ: 12%
+        - BOLL: 16%
+        - OBV: 10%
+        - BIAS: 5%
+        - VR: 5%
         """
         signal_score = {
             "buy": 1.0,
@@ -427,12 +439,13 @@ class TechnicalAnalyzer:
             "sell": -1.0,
         }
 
+        # 基础指标权重
         weights = {
-            "ma": 0.25,
-            "macd": 0.25,
-            "rsi": 0.15,
-            "kdj": 0.15,
-            "boll": 0.20,
+            "ma": 0.20,
+            "macd": 0.20,
+            "rsi": 0.12,
+            "kdj": 0.12,
+            "boll": 0.16,
         }
 
         score = (
@@ -442,6 +455,29 @@ class TechnicalAnalyzer:
             signal_score.get(kdj_signal, 0) * weights["kdj"] +
             signal_score.get(boll_signal, 0) * weights["boll"]
         )
+
+        # OBV 信号（10%）：OBV 上升为正
+        if obv_data is not None and len(obv_data) > 5:
+            obv_up = obv_data.iloc[-1] > obv_data.iloc[-5]
+            score += (0.5 if obv_up else -0.5) * 0.10
+
+        # BIAS 信号（5%）：乖离率过大为负
+        if bias_data is not None and "bias6" in bias_data:
+            bias6 = bias_data["bias6"].iloc[-1] if not pd.isna(bias_data["bias6"].iloc[-1]) else 0
+            if abs(bias6) > 10:
+                score += (-0.5 if bias6 > 0 else 0.5) * 0.05  # 乖离过大要反向
+
+        # VR 信号（5%）：VR>150 过热，VR<50 过冷
+        if vr_data is not None and len(vr_data) > 0:
+            vr = vr_data.iloc[-1] if not pd.isna(vr_data.iloc[-1]) else 100
+            if vr > 200:
+                score += -0.5 * 0.05  # VR 过高，警惕回调
+            elif vr > 150:
+                score += -0.25 * 0.05
+            elif vr < 50:
+                score += 0.5 * 0.05  # VR 过低，可能反弹
+            elif vr < 75:
+                score += 0.25 * 0.05
 
         return max(-1.0, min(1.0, score))
 
@@ -473,6 +509,9 @@ class TechnicalAnalyzer:
         rsi = self.calculate_rsi(df)
         kdj = self.calculate_kdj(df)
         boll = self.calculate_boll(df)
+        obv = self.calculate_obv(df)
+        bias = self.calculate_bias(df)
+        vr = self.calculate_vr(df)
 
         # 获取最新值
         latest = {
@@ -493,9 +532,102 @@ class TechnicalAnalyzer:
                 "middle": round(boll["middle"].iloc[-1], 2) if not pd.isna(boll["middle"].iloc[-1]) else 0,
                 "lower": round(boll["lower"].iloc[-1], 2) if not pd.isna(boll["lower"].iloc[-1]) else 0,
             },
+            "obv": round(obv.iloc[-1], 0) if not pd.isna(obv.iloc[-1]) else 0,
+            "bias": {
+                "bias6": round(bias["bias6"].iloc[-1], 2) if not pd.isna(bias["bias6"].iloc[-1]) else 0,
+                "bias12": round(bias["bias12"].iloc[-1], 2) if not pd.isna(bias["bias12"].iloc[-1]) else 0,
+                "bias24": round(bias["bias24"].iloc[-1], 2) if not pd.isna(bias["bias24"].iloc[-1]) else 0,
+            },
+            "vr": round(vr.iloc[-1], 2) if not pd.isna(vr.iloc[-1]) else 100,
         }
 
         return latest
+
+    def calculate_obv(self, df: pd.DataFrame) -> pd.Series:
+        """
+        计算 OBV (On-Balance Volume) 能量潮
+
+        OBV = 前一日 OBV + 当日成交量 (当日收盘价>前一日收盘价)
+            = 前一日 OBV - 当日成交量 (当日收盘价<前一日收盘价)
+            = 前一日 OBV (当日收盘价=前一日收盘价)
+
+        Args:
+            df: 行情数据
+
+        Returns:
+            OBV 序列
+        """
+        close = df['close']
+        volume = df['volume']
+
+        # 价格变化方向
+        price_change = close.diff()
+        direction = price_change.apply(lambda x: 1 if x > 0 else (-1 if x < 0 else 0))
+
+        # OBV 计算
+        obv = (direction * volume).cumsum()
+
+        return obv.fillna(0)
+
+    def calculate_bias(self, df: pd.DataFrame, periods: List[int] = None) -> Dict[str, pd.Series]:
+        """
+        计算 BIAS (乖离率)
+
+        BIAS = (收盘价 - MA) / MA * 100
+
+        Args:
+            df: 行情数据
+            periods: 均线周期列表，默认 [6, 12, 24]
+
+        Returns:
+            BIAS 字典
+        """
+        if periods is None:
+            periods = [6, 12, 24]
+
+        close = df['close']
+        result = {}
+
+        for period in periods:
+            ma = close.rolling(window=period).mean()
+            bias = (close - ma) / ma * 100
+            result[f"bias{period}"] = bias
+
+        return result
+
+    def calculate_vr(self, df: pd.DataFrame, period: int = 26) -> pd.Series:
+        """
+        计算 VR (Volume Ratio) 成交量比率
+
+        VR = (上涨日成交量之和 + 1/2 平盘日成交量之和) / (下跌日成交量之和 + 1/2 平盘日成交量之和) * 100
+
+        Args:
+            df: 行情数据
+            period: 统计周期，默认 26
+
+        Returns:
+            VR 序列
+        """
+        close = df['close']
+        volume = df['volume']
+
+        # 价格变化
+        price_change = close.diff()
+
+        # 上涨日、下跌日、平盘日成交量
+        up_vol = volume.where(price_change > 0, 0)
+        down_vol = volume.where(price_change < 0, 0)
+        flat_vol = volume.where(price_change == 0, 0)
+
+        # 滚动求和
+        up_sum = up_vol.rolling(window=period).sum()
+        down_sum = down_vol.rolling(window=period).sum()
+        flat_sum = flat_vol.rolling(window=period).sum()
+
+        # VR 计算
+        vr = (up_sum + 0.5 * flat_sum) / (down_sum + 0.5 * flat_sum) * 100
+
+        return vr.fillna(100)
 
 
 __all__ = ["TechnicalAnalyzer", "TechnicalSignal"]

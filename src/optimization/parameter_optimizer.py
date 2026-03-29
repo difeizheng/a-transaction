@@ -444,7 +444,7 @@ class StrategyParameterOptimizer:
 
         返回：综合评分（考虑收益率、夏普比率、最大回撤）
         """
-        from src.strategy.improved_strategy import ImprovedStrategy
+        from src.strategy.archived.improved_strategy import ImprovedStrategy
         from src.engine.backtest import BacktestEngine, Trade
 
         try:

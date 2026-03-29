@@ -31,7 +31,7 @@ from src.engine.decision_engine import DecisionEngine
 from src.engine.risk_manager import RiskManager
 from src.engine.black_swan_detector import BlackSwanDetector
 from src.engine.backtest import evaluate_system
-from src.strategy.improved_strategy import ImprovedStrategy
+from src.strategy.archived.improved_strategy import ImprovedStrategy
 
 # 初始化日志
 logging.basicConfig(level=logging.INFO)

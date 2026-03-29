@@ -1,11 +1,12 @@
 """
-改进版交易策略模块 - 多条件确认 + ATR 动态止损
+改进版交易策略模块 V3 - 多条件确认 + ATR 动态止损 + ADX 震荡过滤
 
 策略核心：
 1. 趋势过滤 - 只在上升趋势中买入
 2. 多条件确认 - MA+MACD+RSI 共振
 3. ATR 动态止损 - 根据波动率调整
-4. 分级止盈止损 - 不同信号强度不同策略
+4. ADX 震荡过滤 - ADX<30 时禁止开仓（核心改进）
+5. 分级止盈止损 - 不同信号强度不同策略
 """
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
@@ -55,9 +56,10 @@ class Position:
 
 class ImprovedStrategy:
     """
-    优化版交易策略 V2
+    优化版交易策略 V3
 
-    买入条件（需同时满足至少 4 个）：
+    买入条件（需同时满足至少 4 个，且 ADX>=30）：
+    0. ADX >= 30（趋势市，非震荡）- 必须满足
     1. 价格在 MA20 之上（趋势向上）+0.25 分
     2. MA20 向上（趋势确认）+0.25 分
     3. MA5 > MA10（短期强势）+0.15 分
@@ -121,8 +123,9 @@ class ImprovedStrategy:
         # 持仓管理
         self.positions: Dict[str, Position] = {}
 
-        logger.info(f"改进策略初始化完成 - 买入阈值：{buy_threshold}, "
-                   f"止损倍数：{atr_multiplier}, 止盈比：{profit_ratio}")
+        logger.info(f"改进策略 V3 初始化完成 - 买入阈值：{buy_threshold}, "
+                   f"止损倍数：{atr_multiplier}, 止盈比：{profit_ratio}, "
+                   f"ADX 过滤：>=30")
 
     def calculate_indicators(self, df: pd.DataFrame) -> Dict:
         """
@@ -153,6 +156,24 @@ class ImprovedStrategy:
 
         # ATR
         indicators['atr'] = self.volatility_analyzer.calculate_atr(df)
+
+        # ADX - 趋势强度指标
+        high = df['high']
+        low = df['low']
+        close = df['close']
+        plus_dm = high.diff()
+        minus_dm = -low.diff()
+        plus_dm = plus_dm.where((plus_dm > minus_dm) & (plus_dm > 0), 0)
+        minus_dm = minus_dm.where((minus_dm > plus_dm) & (minus_dm > 0), 0)
+        tr1 = high - low
+        tr2 = abs(high - close.shift(1))
+        tr3 = abs(low - close.shift(1))
+        tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+        tr_smooth = tr.ewm(span=14, adjust=False).mean()
+        plus_di = 100 * (plus_dm.ewm(span=14, adjust=False).mean() / tr_smooth)
+        minus_di = 100 * (minus_dm.ewm(span=14, adjust=False).mean() / tr_smooth)
+        dx = 100 * abs(plus_di - minus_di) / (plus_di + minus_di)
+        indicators['adx'] = dx.ewm(span=14, adjust=False).mean()
 
         # 成交量均线
         indicators['volume_ma20'] = df['volume'].rolling(20).mean()
@@ -228,6 +249,10 @@ class ImprovedStrategy:
 
         atr = float(ind['atr'].iloc[i]) if not pd.isna(ind['atr'].iloc[i]) else 0
 
+        # 计算 ADX（趋势强度）
+        curr_adx = float(ind['adx'].iloc[i]) if i >= 30 and not pd.isna(ind['adx'].iloc[i]) else 0
+        is_trend_market = curr_adx >= 30  # ADX>=30 为趋势市，<30 为震荡市
+
         # 计算 MA20 趋势（5 日前 MA20）
         prev_ma20 = float(ind['ma20'].iloc[i-5]) if i >= 5 else curr_ma20
 
@@ -240,58 +265,68 @@ class ImprovedStrategy:
         buy_score = 0
         buy_details = {}
 
-        # 条件 1: 价格在 MA20 之上（趋势向上）
-        cond1 = current_price > curr_ma20
-        if cond1:
+        # 条件 0: ADX >= 30（趋势市）- 必须满足，否则禁止开仓
+        if not is_trend_market:
+            # 震荡市，跳过所有买入评估，直接返回 hold
+            signal = "hold"
+            buy_details['adx_filter'] = False
+        else:
             buy_conditions += 1
-            buy_score += 0.25
-        buy_details['above_ma20'] = cond1
+            buy_score += 0.35  # ADX 权重高
+            buy_details['adx_filter'] = True
 
-        # 条件 2: MA20 向上（趋势确认）
-        cond2 = curr_ma20 > prev_ma20
-        if cond2:
-            buy_conditions += 1
-            buy_score += 0.25
-        buy_details['ma20_up'] = cond2
+            # 条件 1: 价格在 MA20 之上（趋势向上）
+            cond1 = current_price > curr_ma20
+            if cond1:
+                buy_conditions += 1
+                buy_score += 0.25
+            buy_details['above_ma20'] = cond1
 
-        # 条件 3: MA5 > MA10（短期强势）
-        cond3 = curr_ma5 > curr_ma10
-        if cond3:
-            buy_conditions += 1
-            buy_score += 0.15
-        buy_details['ma5_above_ma10'] = cond3
+            # 条件 2: MA20 向上（趋势确认）
+            cond2 = curr_ma20 > prev_ma20
+            if cond2:
+                buy_conditions += 1
+                buy_score += 0.25
+            buy_details['ma20_up'] = cond2
 
-        # 条件 4: MACD 金叉或 DIF>0
-        cond4 = (curr_macd > 0) or (curr_macd > prev_macd and prev_macd <= 0)
-        if cond4:
-            buy_conditions += 1
-            buy_score += 0.25
-        buy_details['macd_bullish'] = cond4
+            # 条件 3: MA5 > MA10（短期强势）
+            cond3 = curr_ma5 > curr_ma10
+            if cond3:
+                buy_conditions += 1
+                buy_score += 0.15
+            buy_details['ma5_above_ma10'] = cond3
 
-        # 条件 5: RSI 未超买且上升 (35-65 区间且上升)
-        cond5 = 35 < curr_rsi < 65 and curr_rsi > prev_rsi
-        if cond5:
-            buy_conditions += 1
-            buy_score += 0.2
-        buy_details['rsi_ok'] = cond5
+            # 条件 4: MACD 金叉或 DIF>0
+            cond4 = (curr_macd > 0) or (curr_macd > prev_macd and prev_macd <= 0)
+            if cond4:
+                buy_conditions += 1
+                buy_score += 0.25
+            buy_details['macd_bullish'] = cond4
 
-        # 条件 6: 技术得分正面
-        cond6 = tech_score > 0.1
-        if cond6:
-            buy_score += 0.15
-        buy_details['tech_positive'] = cond6
+            # 条件 5: RSI 未超买且上升 (35-65 区间且上升)
+            cond5 = 35 < curr_rsi < 65 and curr_rsi > prev_rsi
+            if cond5:
+                buy_conditions += 1
+                buy_score += 0.2
+            buy_details['rsi_ok'] = cond5
 
-        # 条件 7: 成交量放大
-        cond7 = volume_ratio > 1.5
-        if cond7:
-            buy_score += 0.15
-        buy_details['volume_up'] = cond7
+            # 条件 6: 技术得分正面
+            cond6 = tech_score > 0.1
+            if cond6:
+                buy_score += 0.15
+            buy_details['tech_positive'] = cond6
 
-        # 条件 8: 价格创新高
-        cond8 = current_price >= high_n
-        if cond8:
-            buy_score += 0.15
-        buy_details['new_high'] = cond8
+            # 条件 7: 成交量放大
+            cond7 = volume_ratio > 1.5
+            if cond7:
+                buy_score += 0.15
+            buy_details['volume_up'] = cond7
+
+            # 条件 8: 价格创新高
+            cond8 = current_price >= high_n
+            if cond8:
+                buy_score += 0.15
+            buy_details['new_high'] = cond8
 
         # === 卖出条件评分 ===
         sell_conditions = 0
@@ -340,7 +375,10 @@ class ImprovedStrategy:
         sell_details['tech_negative'] = cond6_sell
 
         # === 确定信号 ===
-        if buy_conditions >= self.min_buy_conditions and buy_score >= self.buy_threshold:
+        # 如果是震荡市（ADX<30），直接返回 hold
+        if not is_trend_market:
+            signal = "hold"
+        elif buy_conditions >= self.min_buy_conditions and buy_score >= self.buy_threshold:
             if buy_conditions >= 6 and buy_score >= 0.9:
                 signal = "strong_buy"
             else:

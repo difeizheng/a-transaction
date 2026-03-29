@@ -1,5 +1,10 @@
 """
 信号融合引擎 - 多因子信号融合
+
+支持根据市场状态动态调整权重：
+- 牛市：技术权重↑，新闻权重↓
+- 熊市：资金权重↑ (跟着主力走)
+- 震荡市：波动率权重↑
 """
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
@@ -48,6 +53,7 @@ class SignalFusionEngine:
         fund_weight: float = 0.20,
         volatility_weight: float = 0.15,
         sentiment_weight: float = 0.10,
+        market_regime: str = "oscillating",  # bull/bear/oscillating
     ):
         """
         初始化信号融合引擎
@@ -58,18 +64,86 @@ class SignalFusionEngine:
             fund_weight: 资金面权重
             volatility_weight: 波动率权重
             sentiment_weight: 情绪权重
+            market_regime: 市场状态 (bull/bear/oscillating)
         """
-        self.news_weight = news_weight
-        self.technical_weight = technical_weight
-        self.fund_weight = fund_weight
-        self.volatility_weight = volatility_weight
-        self.sentiment_weight = sentiment_weight
+        self.market_regime = market_regime
+        self.base_weights = {
+            "news": news_weight,
+            "technical": technical_weight,
+            "fund": fund_weight,
+            "volatility": volatility_weight,
+            "sentiment": sentiment_weight,
+        }
+
+        # 根据市场状态调整权重
+        self._adjust_weights_by_regime(market_regime)
 
         # 验证权重和为 1
-        total = news_weight + technical_weight + fund_weight + volatility_weight + sentiment_weight
+        total = sum(self.base_weights.values())
         if abs(total - 1.0) > 0.001:
             logger.warning(f"权重和不为 1 ({total})，将自动归一化")
             self._normalize_weights()
+
+    def _adjust_weights_by_regime(self, regime: str):
+        """根据市场状态调整权重"""
+        if regime == "bull":
+            # 牛市：技术权重↑，新闻权重↓
+            self.base_weights = {
+                "news": 0.20,
+                "technical": 0.35,
+                "fund": 0.25,
+                "volatility": 0.10,
+                "sentiment": 0.10,
+            }
+            logger.info("牛市模式：技术权重 35%, 新闻权重 20%")
+        elif regime == "bear":
+            # 熊市：资金权重↑ (跟着主力走)
+            self.base_weights = {
+                "news": 0.15,
+                "technical": 0.20,
+                "fund": 0.35,
+                "volatility": 0.20,
+                "sentiment": 0.10,
+            }
+            logger.info("熊市模式：资金权重 35%, 技术权重 20%")
+        else:
+            # 震荡市：波动率权重↑
+            self.base_weights = {
+                "news": 0.25,
+                "technical": 0.25,
+                "fund": 0.20,
+                "volatility": 0.20,
+                "sentiment": 0.10,
+            }
+            logger.info("震荡市模式：波动率权重 20%")
+
+        self.news_weight = self.base_weights["news"]
+        self.technical_weight = self.base_weights["technical"]
+        self.fund_weight = self.base_weights["fund"]
+        self.volatility_weight = self.base_weights["volatility"]
+        self.sentiment_weight = self.base_weights["sentiment"]
+
+    def update_market_regime(self, regime: str):
+        """
+        更新市场状态并重新调整权重
+
+        Args:
+            regime: 市场状态 (bull/bear/oscillating)
+        """
+        if regime != self.market_regime:
+            logger.info(f"市场状态变更：{self.market_regime} -> {regime}")
+            self.market_regime = regime
+            self._adjust_weights_by_regime(regime)
+
+    def get_current_weights(self) -> Dict[str, float]:
+        """获取当前权重配置"""
+        return {
+            "news": self.news_weight,
+            "technical": self.technical_weight,
+            "fund": self.fund_weight,
+            "volatility": self.volatility_weight,
+            "sentiment": self.sentiment_weight,
+        }
 
     def _normalize_weights(self):
         """归一化权重"""

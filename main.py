@@ -38,7 +38,7 @@ from src.analyzers.volatility_analyzer import VolatilityAnalyzer, DynamicStopLos
 from src.analyzers.market_regime_analyzer import MarketRegimeAnalyzer
 from src.analyzers.sector_analyzer import SectorAnalyzer
 
-from src.strategy.improved_strategy import ImprovedStrategy, StrategySignal
+from src.strategy.archived.improved_strategy import ImprovedStrategy, StrategySignal
 
 from src.engine.signal_fusion import SignalFusionEngine
 from src.engine.decision_engine import DecisionEngine
@@ -131,9 +131,10 @@ class AStockMonitor:
 
         # 5. 初始化数据采集器
         self.news_collector = CompositeNewsCollector()
-        self.price_collector = PriceCollector()
-        self.fund_collector = FundCollector()
-        logger.info("数据采集器初始化成功")
+        tushare_token = get_config().get('data_sources', {}).get('tushare', {}).get('token')
+        self.price_collector = PriceCollector(tushare_token=tushare_token)
+        self.fund_collector = FundCollector(tushare_token=tushare_token)
+        logger.info("数据采集器初始化成功 - Tushare 混合架构启用")
 
         # 6. 初始化分析器
         self.sentiment_analyzer = SentimentAnalyzer(model=self.settings.news_weight > 0)
