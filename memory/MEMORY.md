@@ -3,8 +3,8 @@
 ## 项目概况
 - **位置**: `D:\project_room\workspace2024\mytest\a-transaction`
 - **GitHub**: https://github.com/difeizheng/a-transaction.git
-- **状态**: 第五阶段高级功能扩展完成 (2026-03-27)
-- **最新 Tag**: v3.0.0
+- **状态**: P0+P1 架构优化完成 (2026-03-29)
+- **最新 Tag**: v3.1.0
 
 ## 股票基础数据 (2026-03-25)
 
@@ -120,6 +120,76 @@
 - **Commit**: `99cf958`
 - **新增代码**: 4172 行
 - **新增文件**: 8 个
+
+## 架构优化阶段 (已完成 2026-03-29)
+
+### P0 优化 - 文件清理与目录重构 (Commit: 4727306)
+
+#### 文件清理
+- 删除冗余 Web 面板：`web_dashboard.py` (84K)、`web_dashboard_enhanced.py` (28K)
+- 归档测试文件：7 个测试脚本移至 `tests/archived/`
+- 归档回测脚本：4 个旧版本移至 `backtest/archived/`
+- 重命名主回测：`backtest_improved.py` → `backtest/backtest.py`
+
+#### 策略目录重构
+- 创建三层目录结构：
+  - `src/strategy/active/` - 当前使用策略 (v4_strategy.py)
+  - `src/strategy/components/` - 策略组件 (4 个文件)
+  - `src/strategy/archived/` - 历史版本 (3 个文件)
+- 更新导入路径：main.py、parameter_optimizer.py、web_dashboard_unified.py
+
+#### 回测脚本整合
+- 创建统一回测脚本：`backtest/backtest_unified.py`
+- 支持参数选择策略：`--strategy improved/v3/v4`
+
+#### P0 优化成果
+| 指标 | 优化前 | 优化后 | 改善 |
+|------|--------|--------|------|
+| Web 面板文件 | 3 个 (145K) | 1 个 (33K) | -77% |
+| 根目录测试文件 | 7 个 | 0 个 | -100% |
+| 回测脚本（根目录） | 5 个 | 0 个 | -100% |
+| 策略目录层级 | 扁平 | 3 层分类 | 清晰 |
+
+### P1 优化 - 配置管理与 Web 组件化 (Commit: c86ceab)
+
+#### 配置分层管理
+- 创建 `config/` 目录，包含分层配置：
+  - `base.yaml` - 基础配置（所有环境共享）
+  - `development.yaml` - 开发环境配置
+  - `production.yaml` - 生产环境配置
+  - `schema.yaml` - 配置验证规则
+- 新增 `src/config/config_loader.py`:
+  - 环境变量替换：`${VAR_NAME}`
+  - 配置验证机制
+  - 运行时配置修改
+  - 环境切换支持
+
+#### Web 组件化
+- 创建 `web/` 目录结构：
+  - `web/services/data_service.py` - 统一数据服务层（缓存支持）
+  - `web/components/charts.py` - 图表组件（K线、技术指标、资金流向）
+  - `web/components/tables.py` - 表格组件（持仓、交易、信号）
+  - `web/pages/example.py` - 页面使用示例
+
+#### P1 优化成果
+| 指标 | 优化前 | 优化后 |
+|------|--------|--------|
+| 配置文件 | 113 行单一 | 4 个分层 + 验证规则 |
+| 配置管理 | 硬编码 | 环境变量 + 热更新 |
+| Web 代码 | 33K 单文件 | 组件化模块 |
+
+### 提交记录
+- **Tag**: `v3.1.0`
+- **Commit 1**: `4727306` - P0 架构优化
+- **Commit 2**: `c86ceab` - P1 配置管理与 Web 组件化
+- **净减少代码**: 992 行
+- **新增文件**: 14 个
+
+### 下一步优化（可选）
+- P2: 数据采集适配器模式重构 (10h)
+- P2: 依赖注入容器 (12h)
+- P3: REST API 层 (16h)
+- P3: 测试覆盖 (20h)
 
 ## 第二阶段优化 (已完成 2026-03-24)
 
