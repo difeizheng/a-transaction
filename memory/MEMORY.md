@@ -235,14 +235,19 @@
 # 后台监控服务
 python main.py
 
-# Web 面板 (端口 8701 - 原版)
-streamlit run web_dashboard.py --server.port 8701
-
 # Web 面板 (端口 8703 - 统一版)
 streamlit run web_dashboard_unified.py --server.port 8703
 
+# 统一回测脚本
+python backtest/backtest_unified.py --strategy v4 --days 120
+
 # 单次测试
 python main.py --once
+
+# 配置管理
+# 使用开发环境: load_config('development')
+# 使用生产环境: load_config('production')
+# 或设置环境变量: ENV=production python main.py
 ```
 
 ## 待办任务
@@ -276,11 +281,12 @@ python main.py --once
 1. Windows 控制台不支持 emoji，已替换为文本
 2. 市场状态判断依赖 AkShare 获取沪深 300 指数数据
 3. 板块数据获取受网络影响，有降级处理
-4. 配置修改可直接编辑 `config.yaml`
+4. 配置管理：使用 `config/` 分层配置（base/development/production）
 5. V4 策略回测数据：120 天，+30.10% 收益，45.5% 胜率，3.49 盈亏比
 6. 股票名称数据：5,193 只 A 股已导入数据库，优先从本地读取
 7. 模拟交易：初始资金 20,000 元，数据存储在 `simulated_*` 表中
-8. 统一 Web 面板：13 个页面，端口 8703，整合原版和增强版功能
+8. 统一 Web 面板：13 个页面，端口 8703
+9. 架构优化后：策略目录分层、配置分层管理、Web 组件化
 
 ## 记忆文件索引
 - [fifth_stage_completion.md](fifth_stage_completion.md) - 第五阶段高级功能扩展完成记录
