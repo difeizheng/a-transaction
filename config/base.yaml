@@ -1,0 +1,139 @@
+# 基础配置 - 所有环境共享的默认配置
+
+# 系统配置
+system:
+  data_dir: data
+  db_path: data/trading.db
+  log_dir: logs
+  log_level: INFO
+
+# 数据源配置
+data_sources:
+  tushare:
+    enabled: true
+    token: ${TUSHARE_TOKEN}  # 从环境变量读取
+  baostock:
+    enabled: false
+  akshare:
+    enabled: true
+
+# 技术分析配置
+technical:
+  ma_periods: [5, 10, 20, 60]
+  macd_fast: 12
+  macd_slow: 26
+  macd_signal: 9
+  rsi_period: 14
+  weight: 0.25
+  volatility_weight: 0.15
+
+# 情感分析配置
+sentiment:
+  model: snownlp
+  keyword_threshold: 0.6
+  news_weight: 0.3
+
+# 资金流向配置
+fund_flow:
+  weight: 0.2
+  main_force_threshold: 5000000
+  northbound_threshold: 10000000
+
+# 市场情绪配置
+market_sentiment:
+  weight: 0.1
+  fear_greed_threshold: 30
+
+# 风险管理配置
+risk:
+  excluded_st: true
+  excluded_kcb: false
+  max_drawdown: 0.15
+  max_industry_exposure: 0.30
+  blacklist: []
+
+# 交易配置
+trading:
+  initial_capital: 20000
+  max_position_per_stock: 0.25
+  max_total_position: 0.95
+  min_buy_score: 0.5
+  max_sell_score: -0.6
+  stop_loss: 0.08
+  take_profit: 0.2
+
+  # 增强止损配置
+  stop_loss_enhanced:
+    enabled: true
+    trailing_stop: true
+    trailing_threshold: 0.05
+    trailing_distance: 0.03
+    time_stop: true
+    time_stop_days: 5
+
+  # 网格策略配置
+  grid_strategy:
+    enabled: false
+    grid_num: 5
+    min_grid_profit: 0.02
+    max_grid_profit: 0.05
+    adx_threshold: 30
+
+  # 动态仓位配置
+  dynamic_position:
+    enabled: true
+    signal_based: true
+    regime_based: true
+    risk_adjustment: true
+
+# 股票池配置
+stock_pool:
+  type: custom  # custom/selector
+  max_stocks: 5
+  custom_codes:
+    - '000948'  # 南天信息
+    - '601360'  # 三六零
+    - '300459'  # 汤姆猫
+    - '002714'  # 牧原股份
+    - '600036'  # 招商银行
+
+  # 选股配置
+  selector:
+    enabled: false
+    min_market_cap: 50000000000
+    max_market_cap: 300000000000
+    min_daily_turnover: 100000000
+    min_roe: 0.05
+    max_pe: 50
+    max_pb: 10
+
+# 监控配置
+monitor:
+  interval: 300  # 秒
+  market_hours: false
+  pre_market: false
+  after_market: false
+
+# 通知配置
+notification:
+  enabled: true
+  console: true
+  signal_threshold: 0.5
+  send_summary: true
+  dingtalk_webhook: ${DINGTALK_WEBHOOK}
+  dingtalk_secret: ${DINGTALK_SECRET}
+  wechat_webhook: ${WECHAT_WEBHOOK}
+  hook_url: ${HOOK_URL}
+
+# 回测配置
+backtest:
+  enabled: false
+  initial_balance: 1000000
+  start_date: '2023-01-01'
+  end_date: '2023-12-31'
+
+# 实盘对比配置
+live_compare:
+  enabled: true
+  data_dir: data/live_compare
+  auto_adjust: true

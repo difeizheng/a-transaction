@@ -1,0 +1,51 @@
+# 开发环境配置 - 覆盖 base.yaml 中的配置
+
+# 系统配置
+system:
+  log_level: DEBUG
+
+# 数据源配置
+data_sources:
+  tushare:
+    enabled: true
+  baostock:
+    enabled: true  # 开发环境启用多数据源
+  akshare:
+    enabled: true
+
+# 监控配置
+monitor:
+  interval: 60  # 开发环境缩短监控间隔
+  market_hours: false
+  pre_market: false
+  after_market: false
+
+# 通知配置
+notification:
+  enabled: true
+  console: true  # 开发环境只输出到控制台
+  signal_threshold: 0.3  # 降低阈值，更容易触发通知
+  send_summary: true
+  dingtalk_webhook: ''  # 开发环境不发送钉钉通知
+  dingtalk_secret: ''
+  wechat_webhook: ''
+  hook_url: ''
+
+# 交易配置
+trading:
+  initial_capital: 10000  # 开发环境使用较小资金
+
+# 股票池配置
+stock_pool:
+  max_stocks: 3  # 开发环境减少股票数量
+  custom_codes:
+    - '000948'
+    - '300459'
+    - '600036'
+
+# 回测配置
+backtest:
+  enabled: true
+  initial_balance: 100000
+  start_date: '2024-01-01'
+  end_date: '2024-12-31'

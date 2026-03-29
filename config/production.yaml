@@ -1,0 +1,51 @@
+# 生产环境配置 - 覆盖 base.yaml 中的配置
+
+# 系统配置
+system:
+  log_level: INFO
+
+# 数据源配置
+data_sources:
+  tushare:
+    enabled: true
+  baostock:
+    enabled: false  # 生产环境只用 Tushare
+  akshare:
+    enabled: true
+
+# 监控配置
+monitor:
+  interval: 300  # 5 分钟
+  market_hours: true  # 只在交易时间监控
+  pre_market: false
+  after_market: false
+
+# 通知配置
+notification:
+  enabled: true
+  console: false  # 生产环境不输出到控制台
+  signal_threshold: 0.5
+  send_summary: true
+  # 生产环境从环境变量读取
+  dingtalk_webhook: ${DINGTALK_WEBHOOK}
+  dingtalk_secret: ${DINGTALK_SECRET}
+  wechat_webhook: ${WECHAT_WEBHOOK}
+  hook_url: ${HOOK_URL}
+
+# 交易配置
+trading:
+  initial_capital: 20000
+
+# 股票池配置
+stock_pool:
+  max_stocks: 5
+  custom_codes:
+    - '000948'
+    - '601360'
+    - '300459'
+    - '002714'
+    - '600036'
+
+# 回测配置
+backtest:
+  enabled: false

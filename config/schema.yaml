@@ -1,0 +1,146 @@
+# 配置验证规则 - JSON Schema
+
+type: object
+required:
+  - system
+  - data_sources
+  - trading
+  - stock_pool
+  - monitor
+  - notification
+
+properties:
+  system:
+    type: object
+    required: [data_dir, db_path, log_dir, log_level]
+    properties:
+      data_dir:
+        type: string
+      db_path:
+        type: string
+      log_dir:
+        type: string
+      log_level:
+        type: string
+        enum: [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+
+  data_sources:
+    type: object
+    properties:
+      tushare:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+          token:
+            type: string
+      baostock:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+      akshare:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+
+  trading:
+    type: object
+    required: [initial_capital, max_position_per_stock, stop_loss, take_profit]
+    properties:
+      initial_capital:
+        type: number
+        minimum: 1000
+        maximum: 10000000
+      max_position_per_stock:
+        type: number
+        minimum: 0.1
+        maximum: 1.0
+      max_total_position:
+        type: number
+        minimum: 0.5
+        maximum: 1.0
+      stop_loss:
+        type: number
+        minimum: 0.01
+        maximum: 0.5
+      take_profit:
+        type: number
+        minimum: 0.05
+        maximum: 2.0
+      min_buy_score:
+        type: number
+        minimum: 0
+        maximum: 1
+      max_sell_score:
+        type: number
+        minimum: -1
+        maximum: 0
+
+  stock_pool:
+    type: object
+    required: [type, max_stocks]
+    properties:
+      type:
+        type: string
+        enum: [custom, selector]
+      max_stocks:
+        type: integer
+        minimum: 1
+        maximum: 50
+      custom_codes:
+        type: array
+        items:
+          type: string
+          pattern: "^[0-9]{6}$"
+
+  monitor:
+    type: object
+    required: [interval]
+    properties:
+      interval:
+        type: integer
+        minimum: 10
+        maximum: 3600
+      market_hours:
+        type: boolean
+      pre_market:
+        type: boolean
+      after_market:
+        type: boolean
+
+  notification:
+    type: object
+    required: [enabled]
+    properties:
+      enabled:
+        type: boolean
+      console:
+        type: boolean
+      signal_threshold:
+        type: number
+        minimum: 0
+        maximum: 1
+      send_summary:
+        type: boolean
+
+  risk:
+    type: object
+    properties:
+      excluded_st:
+        type: boolean
+      excluded_kcb:
+        type: boolean
+      max_drawdown:
+        type: number
+        minimum: 0.01
+        maximum: 0.5
+      max_industry_exposure:
+        type: number
+        minimum: 0.1
+        maximum: 1.0
+      blacklist:
+        type: array
+        items:
+          type: string
