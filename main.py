@@ -43,6 +43,7 @@ from src.strategy.archived.improved_strategy import ImprovedStrategy, StrategySi
 from src.engine.signal_fusion import SignalFusionEngine
 from src.engine.decision_engine import DecisionEngine
 from src.engine.risk_manager import RiskManager
+from src.engine.paper_trader import PaperTrader
 
 from rich.console import Console
 from rich.table import Table
@@ -91,6 +92,7 @@ class AStockMonitor:
         self.decision_engine = None
         self.risk_manager = None
         self.stop_loss_manager = None
+        self.paper_trader = None
 
         # 工具
         self.db = None
@@ -128,6 +130,17 @@ class AStockMonitor:
         # 4. 初始化数据库
         self.db = Database(self.settings.db_path)
         logger.info("数据库初始化成功")
+
+        # 4b. 初始化 Paper Trader（模拟撮合引擎）
+        self.paper_trader = PaperTrader(
+            initial_capital=self.settings.initial_capital,
+            db=self.db,
+        )
+        self.paper_trader.load_positions_from_db()
+        logger.info(
+            f"Paper Trader 初始化成功：初始资金 {self.settings.initial_capital:.0f}，"
+            f"恢复持仓 {len(self.paper_trader.positions)} 只"
+        )
 
         # 5. 初始化数据采集器
         self.news_collector = CompositeNewsCollector()
@@ -346,6 +359,7 @@ class AStockMonitor:
 
             # 2. 生成信号（使用 V3 改进策略 - ADX 震荡过滤）
             results = []
+            current_prices: Dict[str, float] = {}
             for stock in sample_stocks:
                 try:
                     code = stock.get("code", "")
@@ -355,10 +369,23 @@ class AStockMonitor:
                     if kline_data.empty:
                         continue
 
+                    current_price = float(kline_data["close"].iloc[-1])
+                    current_prices[code] = current_price
+
                     signal = self.improved_strategy.generate_signal(
                         df=kline_data,
                         stock_code=code,
                         stock_name=stock.get("name", ""),
+                    )
+
+                    # 记录信号到 DB（之前从未调用）
+                    self.db.add_signal(
+                        stock_code=code,
+                        signal_type=signal.signal,
+                        signal_score=signal.buy_score if signal.signal in ["buy", "strong_buy"] else -signal.sell_score,
+                        technical_score=signal.tech_score,
+                        price=signal.price,
+                        reason=f"买分={signal.buy_score:.2f} 卖分={signal.sell_score:.2f} RSI={signal.rsi:.0f}",
                     )
 
                     if signal.signal != "hold":
@@ -376,49 +403,43 @@ class AStockMonitor:
                             "take_profit_distance": signal.take_profit_distance,
                         })
 
-                        # 执行买入（V3 策略固定仓位）
+                        # 买入：交给 PaperTrader 执行
                         if signal.signal in ["buy", "strong_buy"]:
-                            # 固定仓位：strong_buy 25%, buy 20%
                             position_ratio = 0.25 if signal.signal == "strong_buy" else 0.20
-                            quantity = int(self.settings.initial_capital * position_ratio / signal.price / 100) * 100
+                            quantity = int(
+                                self.settings.initial_capital * position_ratio
+                                / signal.price / 100
+                            ) * 100
                             if quantity > 0:
-                                self.improved_strategy.update_position(signal, quantity)
+                                stop_loss_price = round(signal.price * (1 - signal.stop_distance), 3)
+                                take_profit_price = round(signal.price * (1 + signal.take_profit_distance), 3)
+                                self.paper_trader.execute_buy(
+                                    stock_code=code,
+                                    stock_name=signal.stock_name,
+                                    signal_price=signal.price,
+                                    signal_type=signal.signal,
+                                    signal_score=signal.buy_score,
+                                    quantity=quantity,
+                                    stop_loss_price=stop_loss_price,
+                                    take_profit_price=take_profit_price,
+                                    reason=f"买分={signal.buy_score:.2f} RSI={signal.rsi:.0f}",
+                                )
+
+                        # 卖出：通知 PaperTrader
+                        elif signal.signal in ["sell", "strong_sell"]:
+                            self.paper_trader.apply_signal_sell(code, signal.price)
 
                 except Exception as e:
                     logger.error(f"分析股票 {stock.get('code')} 失败：{e}")
                     continue
 
-            # 3. 检查持仓退出条件（V3 策略）
-            for stock in sample_stocks:
-                try:
-                    code = stock.get("code", "")
-                    kline_data = self.price_collector.get_kline(code, period="daily", limit=5)
-                    if kline_data.empty:
-                        continue
-
-                    current_price = float(kline_data["close"].iloc[-1])
-                    timestamp = datetime.now()
-
-                    # 更新跟踪止损并检查退出
-                    pos_info = self.improved_strategy.get_position_info(code)
-                    if pos_info:
-                        # 更新跟踪止损
-                        self.improved_strategy.update_trailing_stop(
-                            code, current_price
-                        )
-
-                        # 检查退出条件
-                        exit_result = self.improved_strategy.check_exit(
-                            code, current_price, timestamp
-                        )
-                        if exit_result:
-                            position, exit_reason, exit_price = exit_result
-                            logger.info(f"{code}: 触发{exit_reason}，退出价={exit_price:.2f}")
-                            self.improved_strategy.remove_position(code)
-
-                except Exception as e:
-                    logger.error(f"检查持仓 {stock.get('code')} 失败：{e}")
-                    continue
+            # 3. PaperTrader：更新持仓价格，检查止损/止盈，保存净值快照
+            if current_prices:
+                self.paper_trader.update_prices(current_prices)
+                triggered = self.paper_trader.check_stops()
+                if triggered:
+                    logger.info(f"触发止损/止盈：{triggered}")
+                self.paper_trader.save_equity_snapshot()
 
             # 4. 输出信号
             if results:
@@ -557,25 +578,31 @@ class AStockMonitor:
 
         console.print(table)
 
-        # 显示持仓状态
-        positions = self.improved_strategy.get_all_positions()
+        # 显示持仓状态（来自 PaperTrader）
+        positions = self.paper_trader.get_positions_detail()
         if positions:
-            pos_table = Table(title="[bold yellow]当前持仓[/bold yellow]")
+            acct = self.paper_trader.get_account_summary()
+            pos_table = Table(title=f"[bold yellow]模拟持仓 | 净值 {acct['total_equity']:.2f} "
+                              f"({'+' if acct['total_pnl'] >= 0 else ''}{acct['total_pnl_rate']:.2%})[/bold yellow]")
             pos_table.add_column("代码", style="cyan")
             pos_table.add_column("名称", style="white")
-            pos_table.add_column("成本", style="yellow")
+            pos_table.add_column("均价", style="yellow")
+            pos_table.add_column("现价", style="white")
+            pos_table.add_column("浮盈%", style="green")
             pos_table.add_column("止损价", style="red")
             pos_table.add_column("止盈价", style="green")
-            pos_table.add_column("最高价", style="magenta")
 
             for pos in positions:
+                pnl_pct = pos["unrealized_pnl_rate"]
+                pnl_color = "green" if pnl_pct >= 0 else "red"
                 pos_table.add_row(
                     pos["stock_code"],
                     pos["stock_name"] or "",
-                    f"{pos['avg_cost']:.2f}",
-                    f"{pos['current_stop']:.2f}",
-                    f"{pos['take_profit']:.2f}",
-                    f"{pos['highest_price']:.2f}",
+                    f"{pos['avg_cost']:.3f}",
+                    f"{pos['current_price']:.3f}",
+                    f"[{pnl_color}]{'+' if pnl_pct >= 0 else ''}{pnl_pct:.2%}[/{pnl_color}]",
+                    f"{pos['stop_loss_price']:.3f}",
+                    f"{pos['take_profit_price']:.3f}",
                 )
             console.print(pos_table)
 
@@ -760,13 +787,18 @@ class AStockMonitor:
         logger.info("系统已关闭")
 
     def _daily_summary(self):
-        """每日汇总"""
+        """每日汇总：保存净值快照，输出模拟账户状态"""
         logger.info("生成每日汇总...")
-        # 这里可以实现每日汇总逻辑，包括：
-        # - 今日交易信号统计
-        # - 模拟收益计算
-        # - 风险评估
-        pass
+        if self.paper_trader:
+            acct = self.paper_trader.get_account_summary()
+            self.paper_trader.save_equity_snapshot()
+            logger.info(
+                f"每日汇总 | 净值={acct['total_equity']:.2f} "
+                f"累计{'+' if acct['total_pnl'] >= 0 else ''}{acct['total_pnl_rate']:.2%} "
+                f"持仓={acct['position_count']}只 "
+                f"现金={acct['cash']:.2f} "
+                f"最大回撤={acct['drawdown']:.2%}"
+            )
 
     def _init_signal_fusion_default(self):
         """使用默认权重初始化信号融合引擎"""

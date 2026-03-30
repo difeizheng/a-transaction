@@ -249,7 +249,108 @@ class Database:
                 )
             """)
 
+            # 模拟持仓表（Paper Trading）
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS simulated_positions (
+                    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                    stock_code  TEXT NOT NULL,
+                    stock_name  TEXT,
+                    entry_price REAL NOT NULL,
+                    quantity    INTEGER NOT NULL,
+                    entry_date  TIMESTAMP NOT NULL,
+                    current_price   REAL,
+                    stop_loss_price REAL,
+                    take_profit_price REAL,
+                    highest_price   REAL,
+                    status      TEXT DEFAULT 'holding',
+                    exit_price  REAL,
+                    exit_date   TIMESTAMP,
+                    exit_reason TEXT,
+                    profit_loss REAL,
+                    profit_rate REAL,
+                    signal_type TEXT,
+                    signal_score REAL
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_simpos_code ON simulated_positions(stock_code)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_simpos_status ON simulated_positions(status)")
+
+            # 模拟交易流水表（Paper Trading）
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS simulated_trades (
+                    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                    stock_code  TEXT NOT NULL,
+                    stock_name  TEXT,
+                    trade_type  TEXT NOT NULL,
+                    price       REAL NOT NULL,
+                    quantity    INTEGER NOT NULL,
+                    amount      REAL NOT NULL,
+                    commission  REAL DEFAULT 0.0,
+                    stamp_tax   REAL DEFAULT 0.0,
+                    transfer_fee REAL DEFAULT 0.0,
+                    net_amount  REAL,
+                    signal_type TEXT,
+                    signal_score REAL,
+                    reason      TEXT,
+                    trade_date  TIMESTAMP NOT NULL,
+                    position_id INTEGER,
+                    realized_pnl REAL
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_simtrade_code ON simulated_trades(stock_code)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_simtrade_date ON simulated_trades(trade_date)")
+
+            # 净值曲线表（Paper Trading）
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS equity_curve (
+                    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp       TIMESTAMP NOT NULL,
+                    total_equity    REAL NOT NULL,
+                    cash            REAL NOT NULL,
+                    position_value  REAL NOT NULL,
+                    daily_return    REAL DEFAULT 0.0,
+                    drawdown        REAL DEFAULT 0.0
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_equity_ts ON equity_curve(timestamp)")
+
+            # 迁移：为旧版 simulated_positions 表补齐新字段
+            self._migrate_simulated_positions(cursor)
+
             logger.info("数据库表初始化完成")
+
+    def _migrate_simulated_positions(self, cursor) -> None:
+        """为旧版 simulated_positions 表添加缺失字段（幂等）"""
+        cursor.execute("PRAGMA table_info(simulated_positions)")
+        existing_cols = {row[1] for row in cursor.fetchall()}
+        new_cols = {
+            "highest_price":    "REAL",
+            "signal_type":      "TEXT",
+            "signal_score":     "REAL",
+            "profit_rate":      "REAL",
+        }
+        for col, col_type in new_cols.items():
+            if col not in existing_cols:
+                cursor.execute(
+                    f"ALTER TABLE simulated_positions ADD COLUMN {col} {col_type}"
+                )
+
+        # simulated_trades 同理
+        cursor.execute("PRAGMA table_info(simulated_trades)")
+        existing_cols = {row[1] for row in cursor.fetchall()}
+        new_trade_cols = {
+            "commission":    "REAL DEFAULT 0.0",
+            "stamp_tax":     "REAL DEFAULT 0.0",
+            "transfer_fee":  "REAL DEFAULT 0.0",
+            "net_amount":    "REAL",
+            "position_id":   "INTEGER",
+            "realized_pnl":  "REAL",
+        }
+        for col, col_def in new_trade_cols.items():
+            if col not in existing_cols:
+                cursor.execute(
+                    f"ALTER TABLE simulated_trades ADD COLUMN {col} {col_def}"
+                )
 
     # ==================== 股票相关操作 ====================
 
@@ -424,3 +525,172 @@ class Database:
                 "INSERT INTO system_logs (level, module, message) VALUES (?, ?, ?)",
                 (level, module, message)
             )
+
+    # ==================== 模拟交易 (Paper Trading) ====================
+
+    def insert_simulated_position(
+        self,
+        stock_code: str,
+        stock_name: str,
+        entry_price: float,
+        quantity: int,
+        entry_date: datetime,
+        stop_loss_price: float,
+        take_profit_price: float,
+        signal_type: str = "",
+        signal_score: float = 0.0,
+    ) -> int:
+        """新增模拟持仓记录，返回新记录的 id"""
+        with self.get_connection() as conn:
+            cursor = conn.execute("""
+                INSERT INTO simulated_positions
+                (stock_code, stock_name, entry_price, quantity, entry_date,
+                 current_price, stop_loss_price, take_profit_price, highest_price,
+                 status, signal_type, signal_score)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'holding', ?, ?)
+            """, (
+                stock_code, stock_name, entry_price, quantity,
+                entry_date.strftime("%Y-%m-%d %H:%M:%S"),
+                entry_price, stop_loss_price, take_profit_price, entry_price,
+                signal_type, signal_score,
+            ))
+            return cursor.lastrowid
+
+    def update_simulated_position_price(
+        self,
+        position_id: int,
+        current_price: float,
+        highest_price: float,
+        stop_loss_price: float,
+    ) -> None:
+        """更新模拟持仓的当前价格和动态止损价"""
+        with self.get_connection() as conn:
+            conn.execute("""
+                UPDATE simulated_positions
+                SET current_price = ?, highest_price = ?, stop_loss_price = ?
+                WHERE id = ?
+            """, (current_price, highest_price, stop_loss_price, position_id))
+
+    def close_simulated_position(
+        self,
+        position_id: int,
+        exit_price: float,
+        exit_date: datetime,
+        exit_reason: str,
+        profit_loss: float,
+        profit_rate: float,
+    ) -> None:
+        """平仓：更新 simulated_positions 状态为 closed"""
+        with self.get_connection() as conn:
+            conn.execute("""
+                UPDATE simulated_positions
+                SET status = 'closed', exit_price = ?, exit_date = ?,
+                    exit_reason = ?, profit_loss = ?, profit_rate = ?
+                WHERE id = ?
+            """, (
+                exit_price,
+                exit_date.strftime("%Y-%m-%d %H:%M:%S"),
+                exit_reason, profit_loss, profit_rate,
+                position_id,
+            ))
+
+    def insert_simulated_trade(
+        self,
+        stock_code: str,
+        stock_name: str,
+        trade_type: str,
+        price: float,
+        quantity: int,
+        amount: float,
+        commission: float,
+        stamp_tax: float,
+        transfer_fee: float,
+        net_amount: float,
+        signal_type: str,
+        signal_score: float,
+        reason: str,
+        trade_date: datetime,
+        position_id: int = None,
+        realized_pnl: float = None,
+    ) -> int:
+        """写入模拟交易流水，返回新记录 id"""
+        with self.get_connection() as conn:
+            cursor = conn.execute("""
+                INSERT INTO simulated_trades
+                (stock_code, stock_name, trade_type, price, quantity, amount,
+                 commission, stamp_tax, transfer_fee, net_amount,
+                 signal_type, signal_score, reason, trade_date,
+                 position_id, realized_pnl)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                stock_code, stock_name, trade_type, price, quantity, amount,
+                commission, stamp_tax, transfer_fee, net_amount,
+                signal_type, signal_score, reason,
+                trade_date.strftime("%Y-%m-%d %H:%M:%S"),
+                position_id, realized_pnl,
+            ))
+            return cursor.lastrowid
+
+    def insert_equity_snapshot(
+        self,
+        timestamp: datetime,
+        total_equity: float,
+        cash: float,
+        position_value: float,
+        daily_return: float = 0.0,
+        drawdown: float = 0.0,
+    ) -> None:
+        """写入净值快照"""
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT INTO equity_curve
+                (timestamp, total_equity, cash, position_value, daily_return, drawdown)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                total_equity, cash, position_value, daily_return, drawdown,
+            ))
+
+    def get_open_positions(self) -> List[Dict[str, Any]]:
+        """获取当前所有持仓（status='holding'）"""
+        with self.get_connection() as conn:
+            cursor = conn.execute("""
+                SELECT * FROM simulated_positions
+                WHERE status = 'holding'
+                ORDER BY entry_date DESC
+            """)
+            return [dict(row) for row in cursor.fetchall()]
+
+    def get_closed_trades(self, limit: int = 0) -> List[Dict[str, Any]]:
+        """获取所有已平仓记录（用于统计胜率/期望值等）"""
+        query = """
+            SELECT * FROM simulated_positions
+            WHERE status = 'closed'
+            ORDER BY exit_date DESC
+        """
+        if limit > 0:
+            query += f" LIMIT {limit}"
+        with self.get_connection() as conn:
+            cursor = conn.execute(query)
+            return [dict(row) for row in cursor.fetchall()]
+
+    def get_simulated_trades(self, limit: int = 100) -> List[Dict[str, Any]]:
+        """获取模拟交易流水记录"""
+        with self.get_connection() as conn:
+            cursor = conn.execute("""
+                SELECT * FROM simulated_trades
+                ORDER BY trade_date DESC
+                LIMIT ?
+            """, (limit,))
+            return [dict(row) for row in cursor.fetchall()]
+
+    def get_equity_curve(self, limit: int = 500) -> List[Dict[str, Any]]:
+        """获取净值曲线数据"""
+        with self.get_connection() as conn:
+            cursor = conn.execute("""
+                SELECT * FROM equity_curve
+                ORDER BY timestamp DESC
+                LIMIT ?
+            """, (limit,))
+            rows = [dict(row) for row in cursor.fetchall()]
+            return list(reversed(rows))  # 返回时间正序

@@ -31,6 +31,8 @@ from src.engine.decision_engine import DecisionEngine
 from src.engine.risk_manager import RiskManager
 from src.engine.black_swan_detector import BlackSwanDetector
 from src.engine.backtest import evaluate_system
+from src.engine.forward_validator import ForwardValidator
+from src.utils.db import Database
 from src.strategy.archived.improved_strategy import ImprovedStrategy
 
 # 初始化日志
@@ -750,54 +752,166 @@ elif page == "⚠️ 黑天鹅检测":
 
 # ==================== 页面：模拟交易 ====================
 elif page == "💼 模拟交易":
-    st.header("💼 模拟交易")
+    st.header("💼 模拟交易 - 前向验证")
+    st.caption("基于真实市价的模拟撮合交易，验证策略实际有效性")
 
-    account = get_simulated_account()
-    positions = get_simulated_positions()
-    trades = get_trade_history(50)
+    # 读取 DB 数据
+    _db = Database(str(DB_PATH))
+    open_positions = _db.get_open_positions()
+    closed_trades  = _db.get_closed_trades()
+    trade_log      = _db.get_simulated_trades(limit=100)
+    equity_rows    = _db.get_equity_curve(limit=500)
 
-    # 账户概览
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("总资产", f"¥{account['total_value']:,.2f}" if account else "¥0")
-    c2.metric("可用资金", f"¥{account['current_capital']:,.2f}" if account else "¥0")
-    c3.metric("持仓数", len(positions))
-    c4.metric("交易次数", len(trades))
+    # ── 账户概览 ────────────────────────────────────────
+    initial_capital = 20000.0
+    try:
+        cfg = load_config()
+        initial_capital = float(cfg.get("trading", {}).get("initial_capital", 20000))
+    except Exception:
+        pass
+
+    # 从交易流水重建账户余额
+    cash = initial_capital
+    for t in _db.get_simulated_trades(limit=0):
+        if t["trade_type"] == "buy":
+            cash -= (t["net_amount"] or t["amount"])
+        elif t["trade_type"] == "sell":
+            cash += (t["net_amount"] or t["amount"])
+
+    position_value = sum(
+        (p.get("current_price") or p["entry_price"]) * p["quantity"]
+        for p in open_positions
+    )
+    total_equity = cash + position_value
+    total_pnl = total_equity - initial_capital
+    total_pnl_rate = total_pnl / initial_capital if initial_capital > 0 else 0.0
+
+    # 最大回撤
+    peak = initial_capital
+    max_dd = 0.0
+    for r in equity_rows:
+        v = r["total_equity"]
+        if v > peak:
+            peak = v
+        dd = (peak - v) / peak if peak > 0 else 0.0
+        max_dd = max(max_dd, dd)
+
+    c1, c2, c3, c4, c5 = st.columns(5)
+    c1.metric("总净值", f"¥{total_equity:,.2f}",
+              delta=f"{'+' if total_pnl_rate >= 0 else ''}{total_pnl_rate:.2%}")
+    c2.metric("可用现金", f"¥{cash:,.2f}")
+    c3.metric("持仓市值", f"¥{position_value:,.2f}")
+    c4.metric("累计盈亏", f"¥{total_pnl:,.2f}")
+    c5.metric("最大回撤", f"{max_dd:.2%}")
 
     st.markdown("---")
 
-    # 持仓和交易
-    c1, c2 = st.columns([2, 1])
+    # ── 净值曲线 + 当前持仓 ─────────────────────────────
+    col_left, col_right = st.columns([3, 2])
 
-    with c1:
-        st.subheader("当前持仓")
-        if positions:
-            pos_df = pd.DataFrame([{
-                "代码": p["stock_code"], "名称": p["stock_name"] or "-",
-                "成本": f"¥{p['entry_price']:.2f}", "数量": p["quantity"],
-                "盈亏": f"¥{p['profit_loss']:.2f}"
-            } for p in positions])
-            st.dataframe(pos_df, use_container_width=True, hide_index=True)
+    with col_left:
+        st.subheader("净值曲线")
+        if len(equity_rows) >= 2:
+            ts_list  = [r["timestamp"] for r in equity_rows]
+            eq_list  = [r["total_equity"] for r in equity_rows]
+            # 归一化为 100 起始
+            base = eq_list[0] if eq_list[0] > 0 else initial_capital
+            eq_norm = [v / base * 100 for v in eq_list]
 
-            # 卖出操作
-            if pos_df is not None and not pos_df.empty:
-                sel_pos = st.selectbox("选择持仓", [p["id"] for p in positions])
-                if st.button("🔴 卖出"):
-                    st.success("卖出成功")
-                    st.rerun()
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=ts_list, y=eq_norm,
+                mode="lines", name="策略净值",
+                line=dict(color="#2196F3", width=2),
+            ))
+            fig.add_hline(y=100, line_dash="dash", line_color="gray",
+                          annotation_text="起始基准")
+            fig.update_layout(
+                height=280,
+                margin=dict(l=10, r=10, t=10, b=30),
+                yaxis_title="净值（起始=100）",
+                xaxis_title="",
+                showlegend=False,
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("净值数据不足（需运行至少 2 次监控后才会生成曲线）")
+
+    with col_right:
+        st.subheader(f"当前持仓（{len(open_positions)} 只）")
+        if open_positions:
+            pos_rows = []
+            for p in open_positions:
+                cur = p.get("current_price") or p["entry_price"]
+                cost = p["entry_price"]
+                pnl_rate = (cur - cost) / cost if cost > 0 else 0.0
+                sign = "+" if pnl_rate >= 0 else ""
+                pos_rows.append({
+                    "代码": p["stock_code"],
+                    "名称": p.get("stock_name") or "-",
+                    "成本": f"{cost:.3f}",
+                    "现价": f"{cur:.3f}",
+                    "浮盈%": f"{sign}{pnl_rate:.2%}",
+                    "止损": f"{p.get('stop_loss_price', 0):.3f}",
+                })
+            st.dataframe(pd.DataFrame(pos_rows), use_container_width=True, hide_index=True)
         else:
             st.info("暂无持仓")
 
-    with c2:
-        st.subheader("交易记录")
-        if trades:
-            trade_df = pd.DataFrame([{
-                "时间": t["trade_date"][:10], "股票": t["stock_code"],
-                "类型": "🟢 买入" if t["trade_type"] == "buy" else "🔴 卖出",
-                "价格": f"¥{t['price']:.2f}"
-            } for t in trades[:10]])
-            st.dataframe(trade_df, use_container_width=True, hide_index=True)
-        else:
-            st.info("暂无交易")
+    st.markdown("---")
+
+    # ── 前向验证统计 ────────────────────────────────────
+    st.subheader("前向验证统计（真实模拟交易，非历史回测）")
+    fwd = ForwardValidator.compute(_db)
+
+    if fwd.total_trades == 0:
+        st.info("尚无平仓交易记录。运行监控服务后，当止盈/止损/策略卖出触发时将自动生成统计。")
+    else:
+        warn = ForwardValidator.warn_if_underperforming(fwd)
+        if warn:
+            st.warning(warn)
+
+        fc1, fc2, fc3, fc4, fc5, fc6 = st.columns(6)
+        fc1.metric("总交易", fwd.total_trades,
+                   help="不含样本不足提示（需>=20笔）" if not fwd.sufficient_sample else "")
+        fc2.metric("实际胜率", f"{fwd.win_rate:.1%}",
+                   delta=f"vs 回测 {fwd.win_rate_vs_backtest:+.1%}")
+        fc3.metric("盈亏比", f"{fwd.profit_loss_ratio:.2f}")
+        fc4.metric("期望值", f"¥{fwd.expectancy:.1f}/笔")
+        fc5.metric("最大回撤", f"{fwd.max_drawdown:.2%}")
+        fc6.metric("夏普比率", f"{fwd.sharpe_ratio:.2f}")
+
+        if not fwd.sufficient_sample:
+            st.caption(f"⚠️ 当前样本 {fwd.total_trades} 笔，建议积累至 20 笔以上后再参考统计结论")
+
+        with st.expander("完整统计详情"):
+            detail = fwd.to_dict()
+            detail_df = pd.DataFrame(list(detail.items()), columns=["指标", "值"])
+            st.dataframe(detail_df, use_container_width=True, hide_index=True)
+
+    st.markdown("---")
+
+    # ── 历史交易记录 ────────────────────────────────────
+    st.subheader("历史交易流水")
+    if trade_log:
+        log_rows = []
+        for t in trade_log:
+            log_rows.append({
+                "时间": (t.get("trade_date") or "")[:16],
+                "代码": t["stock_code"],
+                "名称": t.get("stock_name") or "-",
+                "类型": "买入" if t["trade_type"] == "buy" else "卖出",
+                "价格": f"{t['price']:.3f}",
+                "数量": t["quantity"],
+                "成交额": f"¥{t['amount']:.2f}",
+                "手续费": f"¥{(t.get('commission') or 0) + (t.get('stamp_tax') or 0):.2f}",
+                "实现盈亏": f"¥{t['realized_pnl']:.2f}" if t.get("realized_pnl") is not None else "-",
+                "原因": t.get("reason") or "-",
+            })
+        log_df = pd.DataFrame(log_rows)
+        st.dataframe(log_df, use_container_width=True, hide_index=True)
+    else:
+        st.info("暂无交易流水")
 
 # ==================== 页面：监控历史 ====================
 elif page == "📜 监控历史":
