@@ -90,77 +90,45 @@ st.markdown("---")
 # 侧边栏
 st.sidebar.header("⚙️ 系统设置")
 
-# 导航 - 分区域显示
-st.sidebar.markdown("---")
-# 核心功能模块
-core_pages = [
-    "📊 监控面板",
-    "🔍 监控过程",
-    "💼 模拟交易",
-    "📡 数据采集",
-]
-
-# 分析模块
-analysis_pages = [
-    "📰 情感分析",
-    "📉 技术分析",
-    "🔀 信号融合",
-    "🌐 社交媒体",
-]
-
-# 风险监控模块
-risk_pages = [
-    "⚠️ 黑天鹅检测",
-]
-
-# 历史与评估模块
-history_pages = [
-    "📜 监控历史",
-    "📈 绩效评估",
-    "🔙 回测",
+# 导航菜单
+NAV_GROUPS = [
+    ("核心功能", [
+        "📊 监控面板",
+        "🔍 监控过程",
+        "💼 模拟交易",
+        "📡 数据采集",
+    ]),
+    ("分析模块", [
+        "📰 情感分析",
+        "📉 技术分析",
+        "🔀 信号融合",
+        "🌐 社交媒体",
+    ]),
+    ("风险监控", [
+        "⚠️ 黑天鹅检测",
+    ]),
+    ("历史与评估", [
+        "📜 监控历史",
+        "📈 绩效评估",
+        "🔙 回测",
+    ]),
 ]
 
 # 初始化页面状态
 if "current_page" not in st.session_state:
     st.session_state.current_page = "📊 监控面板"
 
-# 使用按钮组显示导航，每个模块下的菜单项分组显示
-page_buttons = []
-
-# 核心功能模块
-for page_name in core_pages:
-    is_current = page_name == st.session_state.current_page
-    btn_type = "primary" if is_current else "secondary"
-    if st.sidebar.button(page_name, use_container_width=True, key=f"btn_{page_name}", type=btn_type):
-        st.session_state.current_page = page_name
-    page_buttons.append(page_name)
-
+# 渲染导航菜单
 st.sidebar.markdown("---")
-# 分析模块
-for page_name in analysis_pages:
-    is_current = page_name == st.session_state.current_page
-    btn_type = "primary" if is_current else "secondary"
-    if st.sidebar.button(page_name, use_container_width=True, key=f"btn_{page_name}", type=btn_type):
-        st.session_state.current_page = page_name
-    page_buttons.append(page_name)
-
-st.sidebar.markdown("---")
-# 风险监控模块
-for page_name in risk_pages:
-    is_current = page_name == st.session_state.current_page
-    btn_type = "primary" if is_current else "secondary"
-    if st.sidebar.button(page_name, use_container_width=True, key=f"btn_{page_name}", type=btn_type):
-        st.session_state.current_page = page_name
-    page_buttons.append(page_name)
-
-st.sidebar.markdown("---")
-# 历史与评估模块
-for page_name in history_pages:
-    is_current = page_name == st.session_state.current_page
-    btn_type = "primary" if is_current else "secondary"
-    if st.sidebar.button(page_name, use_container_width=True, key=f"btn_{page_name}", type=btn_type):
-        st.session_state.current_page = page_name
-    page_buttons.append(page_name)
+for group_name, pages in NAV_GROUPS:
+    st.sidebar.caption(group_name)
+    for page_name in pages:
+        is_current = page_name == st.session_state.current_page
+        btn_type = "primary" if is_current else "secondary"
+        if st.sidebar.button(page_name, use_container_width=True, key=f"btn_{page_name}", type=btn_type):
+            st.session_state.current_page = page_name
+            st.rerun()
+    st.sidebar.markdown("---")
 
 # 获取当前页面
 page = st.session_state.current_page
