@@ -9,8 +9,8 @@ data_sources:
   baostock:
     enabled: false
   tushare:
-    enabled: false
-    token: ''
+    enabled: true
+    token: '3105a8770ddf433474b7573320dfda2cfc2852a26e0aa7ca3b696e0a'
 fund_flow:
   main_force_threshold: 5000000
   northbound_threshold: 10000000
@@ -77,6 +77,24 @@ technical:
   rsi_period: 14
   volatility_weight: 0.15
   weight: 0.25
+# 新闻爬虫配置
+crawler:
+  enabled: false          # 是否启用爬虫
+  interval: 300           # 采集间隔（秒），默认5分钟
+  stock_codes:           # 采集目标股票
+    - '000948'  # 南天信息
+    - '600036'  # 招商银行
+  sources:               # 数据源配置
+    eastmoney:           # 东方财富
+      enabled: true
+      priority: 1
+    sina:               # 新浪财经
+      enabled: true
+      priority: 2
+    xueqiu:             # 雪球
+      enabled: false
+      priority: 3
+  news_limit: 20         # 每个来源采集数量
 trading:
   initial_capital: 20000
   max_position_per_stock: 0.25
